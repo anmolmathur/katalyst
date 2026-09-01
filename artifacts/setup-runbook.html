@@ -1,0 +1,372 @@
+<title>Katalyst Handover Runbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --plane:#f2f4f7; --surface:#fdfdfe; --surface-2:#f7f9fb;
+  --ink:#141922; --ink-2:#55606f; --ink-3:#7e8998;
+  --rule:#e2e6ec; --rule-2:#eef1f5;
+  --brass:#8d7134; --brass-soft:#f0e7d4;
+  --crit:#d03b3b; --crit-bg:#fbe8e8; --good:#0ca30c;
+  --shadow:0 1px 2px rgba(20,25,34,.05), 0 8px 24px -16px rgba(20,25,34,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --plane:#0c0f14; --surface:#161a21; --surface-2:#1b2029;
+    --ink:#eef1f5; --ink-2:#9aa4b3; --ink-3:#727d8c;
+    --rule:#252b35; --rule-2:#1e232c;
+    --brass:#c9a961; --brass-soft:#2a2418;
+    --crit:#d03b3b; --crit-bg:#2c1416; --good:#0ca30c;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --plane:#0c0f14; --surface:#161a21; --surface-2:#1b2029;
+  --ink:#eef1f5; --ink-2:#9aa4b3; --ink-3:#727d8c;
+  --rule:#252b35; --rule-2:#1e232c;
+  --brass:#c9a961; --brass-soft:#2a2418;
+  --crit:#d03b3b; --crit-bg:#2c1416; --good:#0ca30c;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--plane); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,sans-serif; font-size:15px; line-height:1.55}
+.wrap{max-width:860px; margin:0 auto; padding:34px 22px 90px}
+
+.mast{border-bottom:2px solid var(--ink); padding-bottom:14px; margin-bottom:26px}
+.mast .sub{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); font-weight:600}
+.mast h1{font-family:Newsreader,Georgia,serif; font-weight:500; font-size:clamp(28px,5vw,42px);
+  margin:6px 0 0; letter-spacing:-.015em; line-height:1.05}
+.mast p{color:var(--ink-2); font-size:14px; margin:10px 0 0; max-width:62ch}
+
+.progress{display:flex; align-items:center; gap:12px; margin:22px 0 30px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3)}
+.pbar{flex:1; height:6px; background:var(--rule); border-radius:3px; overflow:hidden}
+.pfill{height:100%; background:var(--good); width:0; transition:width .3s}
+
+.phase{margin-bottom:34px}
+.phase > h2{font-family:Newsreader,Georgia,serif; font-size:22px; font-weight:600; margin:0 0 4px;
+  letter-spacing:-.01em}
+.phase > .why{color:var(--ink-2); font-size:13.5px; margin:0 0 16px; max-width:64ch}
+.who{display:inline-block; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase;
+  font-weight:600; color:var(--brass); border:1px solid var(--brass); border-radius:2px;
+  padding:2px 7px; margin-left:10px; vertical-align:3px}
+
+.step{background:var(--surface); border:1px solid var(--rule); border-radius:3px;
+  padding:16px 18px; margin-bottom:10px; box-shadow:var(--shadow); display:grid;
+  grid-template-columns:26px 1fr; gap:14px; align-items:start}
+.step.done{opacity:.55}
+.step.done .title{text-decoration:line-through; text-decoration-color:var(--ink-3)}
+.step input[type=checkbox]{width:18px; height:18px; margin:2px 0 0; cursor:pointer; accent-color:var(--good)}
+.title{font-weight:600; font-size:15px; margin:0 0 4px}
+.step p{margin:0 0 8px; color:var(--ink-2); font-size:13.5px}
+.step p:last-child{margin-bottom:0}
+.path{font-family:"IBM Plex Mono",monospace; font-size:12.5px; background:var(--surface-2);
+  border:1px solid var(--rule); border-radius:2px; padding:2px 6px; white-space:nowrap}
+.copy{position:relative; margin:10px 0 4px}
+.copy pre{font-family:"IBM Plex Mono",monospace; font-size:12px; line-height:1.6; margin:0;
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:2px;
+  padding:12px 14px; overflow-x:auto; white-space:pre-wrap; color:var(--ink)}
+.copy button{position:absolute; top:7px; right:7px; font:inherit; font-size:11px; padding:4px 9px;
+  background:var(--surface); color:var(--ink-2); border:1px solid var(--rule); border-radius:2px; cursor:pointer}
+.copy button:hover{border-color:var(--brass); color:var(--ink)}
+.warn{background:var(--crit-bg); border-left:2px solid var(--crit); padding:11px 14px;
+  border-radius:0 2px 2px 0; font-size:13.5px; margin:10px 0 0}
+.note{background:var(--brass-soft); border-left:2px solid var(--brass); padding:11px 14px;
+  border-radius:0 2px 2px 0; font-size:13.5px; margin:10px 0 0}
+b{font-weight:600}
+.foot{margin-top:40px; padding-top:20px; border-top:1px solid var(--rule);
+  font-size:13px; color:var(--ink-2)}
+.foot h3{font-family:Newsreader,Georgia,serif; font-size:17px; margin:0 0 8px; color:var(--ink)}
+.foot ul{margin:0; padding-left:18px} .foot li{margin-bottom:7px}
+a{color:var(--ink)}
+button:focus-visible, input:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="mast">
+    <div class="sub">Katalyst Reputation Management</div>
+    <h1>Handover Runbook</h1>
+    <p>Getting the Coverage Desk and the daily tracker running in Nikhila's account.
+    The order matters — each phase depends on the one before it. Roughly 45 minutes,
+    plus 25 for the alerts.</p>
+  </div>
+
+  <div class="progress">
+    <span id="pcount">0 of 0</span>
+    <div class="pbar"><div class="pfill" id="pfill"></div></div>
+    <button id="reset" style="font:inherit;font-size:11px;padding:3px 8px;background:none;border:1px solid var(--rule);border-radius:2px;color:var(--ink-3);cursor:pointer">reset</button>
+  </div>
+
+  <div class="phase">
+    <h2>1 · Before you log in<span class="who">Your account</span></h2>
+    <p class="why">Two things must be true before her account can do anything useful. Both are on your side.</p>
+
+    <div class="step">
+      <input type="checkbox" data-k="a1">
+      <div>
+        <p class="title">Share the coverage workbook with her — as Editor</p>
+        <p>The workbook lives in <span class="path">anmolm@gmail.com</span>'s Drive. Her Claude reads
+        and writes it through <em>her</em> Google account, so without a share she sees nothing.
+        Editor, not Viewer — the tracker appends rows.</p>
+        <p>Open <b>Katalyst_PR_Coverage_WORKING</b> → Share → add <span class="path">nikhilapalat@gmail.com</span> → Editor.</p>
+        <div class="warn">While you're there, change <b>"Anyone with the link can edit"</b> back to
+        restricted. It's been open all afternoon.</div>
+        <div class="note">Longer term the file should live in <em>her</em> Drive, not yours — she owns
+        the data. Transfer ownership once things are stable; the file ID survives, so nothing breaks.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <input type="checkbox" data-k="a2">
+      <div>
+        <p class="title">Import the deduplicated coverage</p>
+        <p>In that same sheet: select the <b>ALL_COVERAGE</b> tab → File → Import → Upload →
+        <span class="path">ALL_COVERAGE_deduped.csv</span> → <b>Replace current sheet</b>.
+        Then add <span class="path">DUPLICATES_REVIEW.csv</span> as a new tab the same way.</p>
+        <p>Both files are in your Nikhila-Katalyst folder. The file ID doesn't change, so the desk
+        needs no edit.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <input type="checkbox" data-k="a3">
+      <div>
+        <p class="title">Push the repo to GitHub</p>
+        <div class="copy"><pre id="c1">cd ~/Documents/Nikhila-Katalyst
+gh repo create katalyst --private --source=. --remote=origin --push</pre>
+          <button data-copy="c1">copy</button></div>
+        <p>Then install it on <em>your</em> Claude first — better to find a packaging problem on your
+        login than on hers.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <h2>2 · Connect her tools<span class="who">Her account</span></h2>
+    <p class="why">Nothing else works until these are authenticated as her.</p>
+
+    <div class="step">
+      <input type="checkbox" data-k="b1">
+      <div>
+        <p class="title">Google Drive and Gmail — both, separately</p>
+        <p><span class="path">Customize → Connectors → +</span>, then connect each and follow the
+        Google auth prompts.</p>
+        <p><b>Gmail is not optional.</b> The tracker's fastest source is her Google Alerts email —
+        without it, the daily run falls straight through to slow searching.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <input type="checkbox" data-k="b2">
+      <div>
+        <p class="title">Check she can see the workbook</p>
+        <p>Ask her Claude: <em>"open Katalyst_PR_Coverage_WORKING in my Drive and tell me how many
+        rows are in ALL_COVERAGE."</em> It should say <b>44</b>. If it can't find the file, step 1.1
+        didn't take.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <input type="checkbox" data-k="b3">
+      <div>
+        <p class="title">Look at her plan</p>
+        <p>Pro already includes Cowork, projects and Opus — her ceiling is usage, not access.
+        If she's staying on Pro for now, that's workable; just expect report-building days to
+        throttle. Max 5x is the fix when she's ready.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <h2>3 · Install the plugin<span class="who">Her account</span></h2>
+    <p class="why">This is the vehicle. Everything we build arrives — and updates — through it.</p>
+
+    <div class="step">
+      <input type="checkbox" data-k="c1">
+      <div>
+        <p class="title">Add the marketplace, install katalyst</p>
+        <p><span class="path">Customize → Plugins → Add marketplace</span> → enter the repository →
+        install <b>katalyst</b> from the list.</p>
+        <div class="note">Private repo, so it needs git credentials once on her machine:
+        <span class="path">gh auth login</span> then <span class="path">gh auth setup-git</span>.
+        Do it now while you're sitting there. If it fights you, install from the plugin file
+        instead and accept manual updates.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <input type="checkbox" data-k="c2">
+      <div>
+        <p class="title">Confirm the skill loaded</p>
+        <p>Open the installed plugin — <b>daily-coverage-tracker</b> should appear under its Skills tab.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <h2>4 · Publish the Coverage Desk on her account<span class="who">Her account</span></h2>
+    <p class="why">This one can't be shortcut. A page with connector access can't be shared — that's
+    the platform protecting client data — so it has to be published from her login to be hers.</p>
+
+    <div class="step">
+      <input type="checkbox" data-k="d1">
+      <div>
+        <p class="title">Attach the file and ask Claude to publish it</p>
+        <p>In a Cowork session on her account, attach
+        <span class="path">artifacts/coverage-desk.html</span> and send:</p>
+        <div class="copy"><pre id="c2">Publish this HTML file as an artifact exactly as written — do not
+rewrite or redesign it.
+
+Declare these capabilities:
+  mcp, with the Google Drive connector and the read_file_content tool
+  sample
+
+Title: Katalyst Coverage Desk</pre>
+          <button data-copy="c2">copy</button></div>
+        <p>Then open it and check the figures: <b>44 placements, 30 clients, 22 with nothing logged.</b></p>
+        <div class="warn">Tell her plainly: <b>open it from the artifacts gallery, never from a saved
+        file.</b> Downloading the HTML and double-clicking it cannot work — the page has no data of
+        its own. It now says so rather than hanging, but the instinct is worth heading off.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <h2>5 · Switch on the alerts<span class="who">Nikhila</span></h2>
+    <p class="why">The single cheapest thing that changes any of these numbers. Twenty-five minutes,
+    and it's hers to do — they land in her inbox.</p>
+
+    <div class="step">
+      <input type="checkbox" data-k="e1">
+      <div>
+        <p class="title">Create the 30 Google Alerts</p>
+        <p>Signed in as <span class="path">nikhilapalat@gmail.com</span>, go to
+        <span class="path">google.com/alerts</span>. Paste each query from the <b>CLIENTS</b> tab —
+        they're already written, with the qualifiers each name needs.</p>
+        <p>Per alert: How often = <b>As-it-happens</b>, Sources = <b>News</b>, Region = <b>India</b>,
+        How many = <b>All results</b>.</p>
+        <p>Tick <b>Alert Created?</b> in the sheet as she goes. The desk's readiness meter fills as she does.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <h2>6 · Schedule the daily tracker<span class="who">Her account</span></h2>
+    <p class="why">Set it to run in test mode first. Nobody's inbox should receive a run we haven't watched.</p>
+
+    <div class="step">
+      <input type="checkbox" data-k="f1">
+      <div>
+        <p class="title">Create the task</p>
+        <p><span class="path">Scheduled</span> in the left sidebar → <b>New task</b> (upper right) →
+        <b>Set up manually</b>. Frequency <b>daily</b>, early morning IST.</p>
+        <div class="copy"><pre id="c3">Run the daily-coverage-tracker skill for the Katalyst client roster.
+
+TEST MODE IS ON: write new rows to a copy of the coverage workbook,
+not the live one, and send the summary email to anmolm@gmail.com only
+— not to Pooja, and not to Nikhila.
+
+Leave test mode on until told otherwise.</pre>
+          <button data-copy="c3">copy</button></div>
+        <div class="note">Scheduled tasks run in the cloud and can't touch local folders — fine here,
+        since everything lives in Drive and Gmail.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <input type="checkbox" data-k="f2">
+      <div>
+        <p class="title">Trigger one run by hand and read the output</p>
+        <p>From the Scheduled list, run it manually. Check three things: it finished inside its time
+        budget, the email arrived at your address, and the rows it logged are real coverage rather
+        than directory listings.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <input type="checkbox" data-k="f3">
+      <div>
+        <p class="title">After three clean runs, turn test mode off</p>
+        <p>Edit the task prompt: point it at the live workbook and let the email go to Pooja
+        (CC Nikhila), as her original spec had it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <h2>7 · Verify<span class="who">Both</span></h2>
+    <div class="step">
+      <input type="checkbox" data-k="g1">
+      <div>
+        <p class="title">The three checks that mean it's working</p>
+        <p><b>1.</b> The desk on her account shows 44 placements and 22 silent clients.<br>
+        <b>2.</b> The alert-readiness meter moves as she ticks the CLIENTS tab.<br>
+        <b>3.</b> A manual tracker run appends a row and emails you.</p>
+        <p>If all three hold, tomorrow morning works without either of you touching it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <h3>Still outstanding after this</h3>
+    <ul>
+      <li><b>The MAV ruling.</b> Two valuation methods are live in one column, differing by more than
+      an order of magnitude. Nikhila needs to say which is canonical before any client report is built
+      from this data.</li>
+      <li><b>One mis-attributed row.</b> An Instagram post credited to LocalSamosa in one row and
+      Hotels of India in another. Same post — one is wrong, and only she'll know which.</li>
+      <li><b>Rotate the search API key</b> that went over WhatsApp. Nothing depends on it any more —
+      the tracker uses built-in search — but it's still live.</li>
+      <li><b>The two master media lists.</b> Worth settling which one the team actually edits before
+      anything automated reads it.</li>
+      <li><b>Per-client projects</b>, the reel workflow, and the monthly report builder — the next
+      tasks, none of which block this morning routine.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const KEY = "katalyst-runbook-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ state = {}; }
+
+const boxes = [...document.querySelectorAll('input[type=checkbox][data-k]')];
+const pcount = document.getElementById("pcount");
+const pfill = document.getElementById("pfill");
+
+function paint(){
+  let done = 0;
+  boxes.forEach(b => {
+    const on = !!state[b.dataset.k];
+    b.checked = on;
+    b.closest(".step").classList.toggle("done", on);
+    if(on) done++;
+  });
+  pcount.textContent = `${done} of ${boxes.length}`;
+  pfill.style.width = (done / boxes.length * 100) + "%";
+}
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){ /* private window — ticks just won't persist */ }
+}
+boxes.forEach(b => b.addEventListener("change", () => {
+  state[b.dataset.k] = b.checked; save(); paint();
+}));
+document.getElementById("reset").addEventListener("click", () => { state = {}; save(); paint(); });
+paint();
+
+document.querySelectorAll("[data-copy]").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const txt = document.getElementById(btn.dataset.copy).textContent;
+    try { await navigator.clipboard.writeText(txt); btn.textContent = "copied"; }
+    catch(e){ btn.textContent = "select manually"; }
+    setTimeout(() => btn.textContent = "copy", 1600);
+  });
+});
+</script>
