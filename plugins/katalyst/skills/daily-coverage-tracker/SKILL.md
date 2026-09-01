@@ -70,18 +70,34 @@ skill's job.
 For each client, run its query from `CLIENTS` with the web search tool. Spend no more than about
 two minutes per client — breadth across the budget beats depth on one name.
 
-**Rotate through the roster; do not restart from the same end every day.** The budget covers
-roughly nine or ten of the thirty clients per run, so a run that always begins at the top means
-the last twenty are never checked at all. Read the most recent `Logged On` dates in
-`ALL_COVERAGE` and start with the clients least recently *searched*, so every client comes round
-within about three days.
+**Rotate through the roster on a fixed three-day cycle.** The budget covers roughly ten of the
+thirty clients per run, so a run that always starts at the top means the bottom twenty are never
+searched at all.
 
-Two exceptions jump the queue: a client with a known launch or event in the next fortnight (the
-`CLIENTS` setup notes flag these), and any client that appeared in Priority 1 alert mail.
+Take the `CLIENTS` tab in its own row order and split it into three blocks of ten. Pick the
+block by the day of the month:
 
-Name in the email which clients you covered and which you did not reach. Without that, nobody
-can tell a genuinely quiet client from one that simply was not searched — and the dashboard's
-silence ledger will read the second as the first.
+| Day of month | Block |
+|---|---|
+| 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31 | rows 1–10 |
+| 2, 5, 8, 11, 14, 17, 20, 23, 26, 29 | rows 11–20 |
+| 3, 6, 9, 12, 15, 18, 21, 24, 27, 30 | rows 21–30 |
+
+This needs no memory of previous runs, which matters because each scheduled run starts fresh
+with none. Every client is searched at least every third day, and which clients a given run
+covered is reproducible after the fact.
+
+**Do not rotate by "least recently logged".** A client that is searched but has no coverage
+never gets a `Logged On` stamp, so it would look permanently unsearched and monopolise the
+rotation while genuinely active clients starve.
+
+Two exceptions jump the queue regardless of block: a client with a launch or event inside the
+next fortnight (the `CLIENTS` setup notes flag these), and any client that appeared in Priority
+1 alert mail. Search those first, then work the day's block.
+
+Name in the email which block you covered and which clients you did not reach. Without that,
+nobody can tell a genuinely quiet client from one that simply was not searched — and the
+dashboard's silence ledger will read the second as the first.
 
 **Priority 3 — Tier 1 named contacts, only if time remains.**
 Take Tier 1 names from the media list and pair each with a client or category term. Skip Tier
