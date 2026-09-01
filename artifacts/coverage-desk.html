@@ -1,0 +1,544 @@
+<title>Katalyst Coverage Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --plane:#f2f4f7; --surface:#fdfdfe; --surface-2:#f7f9fb;
+  --ink:#141922; --ink-2:#55606f; --ink-3:#7e8998;
+  --rule:#e2e6ec; --rule-2:#eef1f5;
+  --brass:#8d7134; --brass-soft:#f0e7d4;
+  --mag:#2a78d6;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --good-bg:#e7f5e7; --warn-bg:#fdf3dd; --crit-bg:#fbe8e8;
+  --shadow:0 1px 2px rgba(20,25,34,.05), 0 8px 24px -16px rgba(20,25,34,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --plane:#0c0f14; --surface:#161a21; --surface-2:#1b2029;
+    --ink:#eef1f5; --ink-2:#9aa4b3; --ink-3:#727d8c;
+    --rule:#252b35; --rule-2:#1e232c;
+    --brass:#c9a961; --brass-soft:#2a2418;
+    --mag:#3987e5;
+    --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+    --good-bg:#12240f; --warn-bg:#2b2211; --crit-bg:#2c1416;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --plane:#0c0f14; --surface:#161a21; --surface-2:#1b2029;
+  --ink:#eef1f5; --ink-2:#9aa4b3; --ink-3:#727d8c;
+  --rule:#252b35; --rule-2:#1e232c;
+  --brass:#c9a961; --brass-soft:#2a2418;
+  --mag:#3987e5;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --good-bg:#12240f; --warn-bg:#2b2211; --crit-bg:#2c1416;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--plane); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px; margin:0 auto; padding:34px 22px 90px}
+
+/* masthead */
+.mast{border-bottom:2px solid var(--ink); padding-bottom:14px; margin-bottom:6px;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap}
+.mast h1{font-family:Newsreader,Georgia,serif; font-weight:500; font-size:clamp(30px,4.4vw,44px);
+  margin:0; letter-spacing:-.015em; text-wrap:balance; line-height:1.05}
+.mast .sub{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--brass);
+  font-weight:600; margin-bottom:7px}
+.stamp{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3); text-align:right; line-height:1.7}
+.rule-thin{height:1px; background:var(--rule); margin:0 0 30px}
+
+/* panels */
+.panel{background:var(--surface); border:1px solid var(--rule); border-radius:3px;
+  padding:22px 24px; margin-bottom:20px; box-shadow:var(--shadow)}
+.phead{display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+  margin:0 0 4px; flex-wrap:wrap}
+.phead h2{font-family:Newsreader,Georgia,serif; font-weight:600; font-size:20px; margin:0; letter-spacing:-.01em}
+.phead .n{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3); font-variant-numeric:tabular-nums}
+.lede{color:var(--ink-2); font-size:13.5px; margin:0 0 18px; max-width:66ch}
+
+/* hero */
+.hero{display:grid; grid-template-columns:auto 1fr; gap:26px; align-items:center}
+.bignum{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:clamp(56px,10vw,88px);
+  line-height:.86; letter-spacing:-.04em; color:var(--crit); font-variant-numeric:tabular-nums}
+.bignum.ok{color:var(--good)}
+.hero .of{font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-3); margin-top:8px}
+.hero p{margin:0; font-size:15.5px; color:var(--ink-2); max-width:52ch}
+.hero strong{color:var(--ink); font-weight:600}
+
+/* stat strip */
+.strip{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden; margin-top:22px}
+.stat{background:var(--surface); padding:14px 16px}
+.stat .v{font-family:"IBM Plex Mono",monospace; font-size:25px; font-weight:600; letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums; line-height:1.1}
+.stat .k{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-top:5px}
+
+/* table */
+.scroll{overflow-x:auto; margin:0 -4px}
+table{border-collapse:collapse; width:100%; font-size:13.5px}
+th{text-align:left; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:600; padding:0 12px 9px; border-bottom:1px solid var(--rule); white-space:nowrap}
+td{padding:10px 12px; border-bottom:1px solid var(--rule-2); vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface-2)}
+.num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap}
+.cli{font-weight:500}
+.grp{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); white-space:nowrap}
+
+/* status pill: colour + dot + WORD, never colour alone */
+.pill{display:inline-flex; align-items:center; gap:6px; padding:3px 9px 3px 7px; border-radius:2px;
+  font-size:11.5px; font-weight:600; letter-spacing:.03em; white-space:nowrap}
+.pill .dot{width:7px; height:7px; border-radius:50%; flex:none}
+.p-crit{background:var(--crit-bg); color:var(--ink)} .p-crit .dot{background:var(--crit)}
+.p-warn{background:var(--warn-bg); color:var(--ink)} .p-warn .dot{background:var(--warn)}
+.p-good{background:var(--good-bg); color:var(--ink)} .p-good .dot{background:var(--good)}
+
+/* magnitude bars — one hue, length carries value */
+.bars{display:grid; gap:11px; margin-top:4px}
+.bar-row{display:grid; grid-template-columns:130px 1fr 42px; gap:14px; align-items:center}
+.bar-lab{font-size:13px; font-weight:500}
+.bar-track{height:9px; background:var(--rule-2); border-radius:2px; overflow:hidden}
+.bar-fill{height:100%; background:var(--mag); border-radius:0 2px 2px 0; min-width:2px;
+  transition:width .5s cubic-bezier(.2,.7,.3,1)}
+.bar-val{font-family:"IBM Plex Mono",monospace; font-size:13px; text-align:right;
+  font-variant-numeric:tabular-nums; color:var(--ink-2)}
+
+/* meter */
+.meter{height:11px; background:var(--rule-2); border-radius:2px; overflow:hidden; margin:14px 0 10px}
+.meter-fill{height:100%; background:var(--good); transition:width .5s}
+.meter-fill.zero{background:var(--crit)}
+
+/* feed */
+.feed{display:grid; gap:0}
+.item{display:grid; grid-template-columns:88px 1fr; gap:16px; padding:13px 0; border-bottom:1px solid var(--rule-2)}
+.item:last-child{border-bottom:none}
+.item .d{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3); padding-top:1px}
+.item .t{font-size:14px; margin:0 0 3px; line-height:1.4}
+.item .m{font-size:12px; color:var(--ink-3)}
+.item a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item a:hover{border-bottom-color:var(--brass)}
+
+/* notes / states */
+.note{background:var(--brass-soft); border-left:2px solid var(--brass); padding:13px 16px;
+  font-size:13.5px; color:var(--ink); border-radius:0 2px 2px 0}
+.note b{font-weight:600}
+.state{padding:44px 24px; text-align:center; color:var(--ink-2); font-size:14px}
+.state h3{font-family:Newsreader,Georgia,serif; font-size:19px; margin:0 0 8px; color:var(--ink); font-weight:600}
+.state code{font-family:"IBM Plex Mono",monospace; font-size:12.5px; background:var(--surface-2);
+  padding:2px 6px; border-radius:2px; border:1px solid var(--rule)}
+.skel{height:12px; background:var(--rule-2); border-radius:2px; animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+/* ask */
+.ask-row{display:flex; gap:9px; margin-top:4px; flex-wrap:wrap}
+.ask-row input{flex:1 1 260px; font:inherit; font-size:14px; padding:10px 13px; color:var(--ink);
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:2px}
+.ask-row input:focus{outline:2px solid var(--brass); outline-offset:1px}
+button{font:inherit; font-size:13.5px; font-weight:500; padding:10px 18px; cursor:pointer;
+  background:var(--ink); color:var(--surface); border:1px solid var(--ink); border-radius:2px}
+button:hover{opacity:.87}
+button:disabled{opacity:.45; cursor:default}
+button:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+.chips{display:flex; gap:7px; flex-wrap:wrap; margin-top:11px}
+.chip{font-size:12px; padding:5px 11px; background:var(--surface-2); border:1px solid var(--rule);
+  border-radius:2px; cursor:pointer; color:var(--ink-2)}
+.chip:hover{border-color:var(--brass); color:var(--ink)}
+.answer{margin-top:15px; padding:15px 17px; background:var(--surface-2); border:1px solid var(--rule);
+  border-radius:2px; font-size:14px; white-space:pre-wrap; line-height:1.6}
+.foot{font-size:11.5px; color:var(--ink-3); text-align:center; margin-top:34px; line-height:1.7}
+</style>
+
+<div class="wrap">
+  <div class="mast">
+    <div>
+      <div class="sub">Katalyst Reputation Management</div>
+      <h1>Coverage Desk</h1>
+    </div>
+    <div class="stamp" id="stamp">reading the tracker…</div>
+  </div>
+  <div class="rule-thin"></div>
+
+  <div id="app">
+    <div class="panel"><div class="state">
+      <div class="skel" style="width:180px;margin:0 auto 14px"></div>
+      <div class="skel" style="width:320px;margin:0 auto"></div>
+    </div></div>
+  </div>
+
+  <div class="foot">
+    Reads the live coverage workbook through your own Google Drive connection.<br>
+    Nothing is stored in this page.
+  </div>
+</div>
+
+<script>
+const FILE_ID = "1b7oxECghsVqe2GEY0DJNCyu8uDvGcP-MBNPRbtrIMVI";
+const app = document.getElementById("app");
+const stamp = document.getElementById("stamp");
+let STATE = null;
+
+/* ---------- parse the connector's markdown-table rendering ---------- */
+function unesc(s){ return String(s).replace(/\\([_&>!~*\[\]])/g,"$1").trim(); }
+function cells(line){ return line.replace(/^\||\|$/g,"").split("|").map(unesc); }
+
+function parseTables(md){
+  const lines = String(md).split("\n");
+  const out = [];
+  for(let i=0;i<lines.length;i++){
+    if(!/^\|\s*:-:/.test(lines[i])) continue;
+    const header = lines[i+1];
+    if(!header || !header.startsWith("|")) continue;
+    const cols = cells(header);
+    const rows = [];
+    for(let j=i+2;j<lines.length;j++){
+      if(!lines[j].startsWith("|")) break;
+      if(/^\|\s*:-:/.test(lines[j])) break;
+      rows.push(cells(lines[j]));
+    }
+    out.push({cols, rows});
+    i += rows.length + 1;
+  }
+  return out;
+}
+
+function pickTable(tables, ...need){
+  return tables.find(t => need.every(n => t.cols.some(c => c.toLowerCase().includes(n))));
+}
+function toObjects(t){
+  if(!t) return [];
+  return t.rows.map(r => {
+    const o = {};
+    t.cols.forEach((c,i) => o[c] = (r[i] ?? "").trim());
+    return o;
+  }).filter(o => Object.values(o).some(v => v !== ""));
+}
+
+/* ---------- shape the data ---------- */
+/* When the sheet carries no "MAV Method" column, read the method off the value itself:
+   rupee-symbol figures are Katalyst's own rate card; "Rs." figures came from the CPM estimate. */
+function methodOf(mav){
+  const v = String(mav || "").trim();
+  if(!v || /^n\/a/i.test(v)) return "No MAV recorded";
+  if(v.includes("\u20b9")) return "Rate card (as entered)";
+  if(/rs\.?\s*[\d,]/i.test(v)) return "CPM estimate";
+  return "No MAV recorded";
+}
+
+function build(md){
+  const tables = parseTables(md);
+  const cov = toObjects(pickTable(tables,"date","client","publication"));
+  const cli = toObjects(pickTable(tables,"client","google alerts query"));
+  const key = (o,frag) => { const k = Object.keys(o).find(x=>x.toLowerCase().includes(frag)); return k?o[k]:""; };
+
+  const coverage = cov.map(r => ({
+    date: key(r,"date").slice(0,10),
+    client: key(r,"client"),
+    group: key(r,"group"),
+    pub: key(r,"publication"),
+    tier: key(r,"tier"),
+    topic: key(r,"topic"),
+    link: key(r,"link"),
+    place: key(r,"placement"),
+    mav: key(r,"mav (rs")||key(r,"mav"),
+    method: key(r,"method")
+  })).filter(r => /^\d{4}-\d{2}/.test(r.date) && r.client)
+    .map(r => ({...r, method: r.method || methodOf(r.mav)}));
+
+  const clients = cli.map(r => ({
+    name: key(r,"client"),
+    group: key(r,"group"),
+    alert: key(r,"alert created"),
+    query: key(r,"google alerts query")
+  })).filter(r => r.name && r.name.toLowerCase() !== "client");
+
+  const today = new Date();
+  const byClient = {};
+  coverage.forEach(c => {
+    const d = c.date.length === 7 ? c.date + "-15" : c.date;
+    const t = Date.parse(d);
+    if(!byClient[c.client] || t > byClient[c.client].t) byClient[c.client] = {t, date:c.date};
+  });
+
+  const roster = clients.map(c => {
+    const last = byClient[c.name];
+    const days = last ? Math.floor((today - last.t)/864e5) : null;
+    return {...c, last: last ? last.date : null, days,
+            count: coverage.filter(x => x.client === c.name).length};
+  });
+  // clients that appear in coverage but not on the roster still deserve a row
+  Object.keys(byClient).forEach(name => {
+    if(roster.some(r => r.name === name)) return;
+    const c = coverage.find(x => x.client === name);
+    roster.push({name, group:c.group, alert:"", query:"", last:byClient[name].date,
+                 days:Math.floor((today-byClient[name].t)/864e5),
+                 count:coverage.filter(x=>x.client===name).length, offRoster:true});
+  });
+
+  const groups = {};
+  roster.forEach(r => {
+    const g = r.group || "Unassigned";
+    groups[g] = groups[g] || {name:g, clients:0, silent:0, placements:0};
+    groups[g].clients++; groups[g].placements += r.count;
+    if(r.count === 0) groups[g].silent++;
+  });
+
+  const tiers = {};
+  coverage.forEach(c => { const t = c.tier || "Unrecorded"; tiers[t] = (tiers[t]||0)+1; });
+
+  const methods = {};
+  coverage.forEach(c => { const m = c.method || "No MAV recorded"; methods[m] = (methods[m]||0)+1; });
+
+  const alertsDone = roster.filter(r => /^(y|yes|done|✓|true)/i.test(r.alert)).length;
+
+  return {coverage, roster, groups:Object.values(groups).sort((a,b)=>b.placements-a.placements),
+          tiers, methods, alertsDone};
+}
+
+/* ---------- render ---------- */
+const esc = s => String(s??"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function statusOf(r){
+  if(r.count === 0) return ["p-crit","Never logged"];
+  if(r.days >= 60) return ["p-crit", r.days + " days"];
+  if(r.days >= 30) return ["p-warn", r.days + " days"];
+  return ["p-good", r.days + " days"];
+}
+
+function render(S){
+  STATE = S;
+  const {coverage, roster, groups, tiers, methods, alertsDone} = S;
+  const never = roster.filter(r => r.count === 0);
+  const quiet = roster.filter(r => r.count > 0 && r.days >= 30);
+  const maxP = Math.max(1, ...groups.map(g => g.placements));
+  const noMav = methods["No MAV recorded"] || 0;
+  const mixed = Object.keys(methods).filter(m => m !== "No MAV recorded" && m).length;
+
+  const ledger = roster.slice().sort((a,b) =>
+    (a.count===0?-1:0)-(b.count===0?-1:0) || (b.days??1e9)-(a.days??1e9) || a.name.localeCompare(b.name));
+
+  const recent = coverage.slice().sort((a,b) => b.date.localeCompare(a.date)).slice(0,12);
+
+  app.innerHTML = `
+  <div class="panel">
+    <div class="hero">
+      <div>
+        <div class="bignum ${never.length?"":"ok"}">${never.length}</div>
+        <div class="of">of ${roster.length} clients</div>
+      </div>
+      <p>have <strong>no coverage logged at all</strong>. A further <strong>${quiet.length}</strong>
+      ${quiet.length===1?"has":"have"} had nothing for 30 days or more.
+      Silence here is usually a monitoring gap rather than a quiet month — the first thing to check
+      is whether that client's Google Alert was ever created.</p>
+    </div>
+    <div class="strip">
+      <div class="stat"><div class="v">${coverage.length}</div><div class="k">Placements logged</div></div>
+      <div class="stat"><div class="v">${roster.length - never.length}</div><div class="k">Clients with coverage</div></div>
+      <div class="stat"><div class="v">${alertsDone}<span style="font-size:15px;color:var(--ink-3)">/${roster.length}</span></div><div class="k">Alerts confirmed set up</div></div>
+      <div class="stat"><div class="v">${noMav}</div><div class="k">Rows with no MAV</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="phead"><h2>The silence ledger</h2><div class="n">${ledger.length} clients · worst first</div></div>
+    <p class="lede">Every client on the roster, ranked by how long since anything was logged.
+    This is the view the thirty-tab structure made impossible.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Client</th><th>Group</th><th>Since last coverage</th>
+        <th class="num">Placements</th><th>Last logged</th><th>Alert set up</th></tr></thead>
+      <tbody>${ledger.map(r => {
+        const [cls,lab] = statusOf(r);
+        return `<tr>
+          <td class="cli">${esc(r.name)}${r.offRoster?' <span class="grp">not on roster</span>':""}</td>
+          <td class="grp">${esc(r.group||"—")}</td>
+          <td><span class="pill ${cls}"><span class="dot"></span>${esc(lab)}</span></td>
+          <td class="num">${r.count||"—"}</td>
+          <td class="num" style="color:var(--ink-2)">${esc(r.last||"—")}</td>
+          <td>${/^(y|yes|done|✓|true)/i.test(r.alert)
+                ? '<span class="pill p-good"><span class="dot"></span>Yes</span>'
+                : '<span class="pill p-warn"><span class="dot"></span>Not confirmed</span>'}</td>
+        </tr>`;}).join("")}</tbody>
+    </table></div>
+  </div>
+
+  <div class="panel">
+    <div class="phead"><h2>Placements by group</h2><div class="n">sixteen brands sit under three restaurateurs</div></div>
+    <p class="lede">Coverage rolled up the way the roster actually works — one relationship often
+    covers several brands, and a single article can name more than one.</p>
+    <div class="bars">${groups.map(g => `
+      <div class="bar-row">
+        <div class="bar-lab">${esc(g.name)}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(g.placements/maxP*100).toFixed(1)}%"></div></div>
+        <div class="bar-val">${g.placements}</div>
+      </div>
+      <div class="bar-row" style="margin-top:-6px">
+        <div></div><div class="grp">${g.clients} client${g.clients===1?"":"s"} · ${g.silent} with nothing logged</div><div></div>
+      </div>`).join("")}
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="phead"><h2>Alert readiness</h2><div class="n">${alertsDone} of ${roster.length} confirmed</div></div>
+    <p class="lede">The daily tracker reads Google Alerts email as its first and fastest source.
+    Every client whose alert was never created is invisible to it each morning.</p>
+    <div class="meter"><div class="meter-fill ${alertsDone?"":"zero"}" style="width:${Math.max(alertsDone/Math.max(roster.length,1)*100,1.5)}%"></div></div>
+    <div class="note">${alertsDone===0
+      ? "<b>No alerts are marked as created.</b> Setting up the thirty queries in the CLIENTS tab takes about 25 minutes and is the single cheapest thing that could change these numbers. Tick the <b>Alert Created?</b> column as you go and this meter fills."
+      : `<b>${roster.length-alertsDone} still to set up.</b> Work down the CLIENTS tab and tick <b>Alert Created?</b> as you go.`}</div>
+  </div>
+
+  <div class="panel">
+    <div class="phead"><h2>Valuation integrity</h2><div class="n">check before any client report</div></div>
+    <p class="lede">Which MAV method each logged placement uses. Mixing methods in one column
+    produces a total that cannot be defended if a client asks how it was calculated.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Method</th><th class="num">Placements</th><th>Note</th></tr></thead>
+      <tbody>${Object.entries(methods).sort((a,b)=>b[1]-a[1]).map(([m,n]) => `
+        <tr><td class="cli">${esc(m)}</td><td class="num">${n}</td>
+        <td style="color:var(--ink-2);font-size:12.5px">${
+          m.toLowerCase().includes("rate card") ? "Katalyst's own figures — the likely canonical method."
+          : m.toLowerCase().includes("cpm") ? "Derived from follower counts. Directional only; AMEC and PRSA both reject AVE multipliers."
+          : "Never valued. More than half the coverage, in most months."}</td></tr>`).join("")}
+      </tbody>
+    </table></div>
+    ${mixed>1?'<div class="note" style="margin-top:16px"><b>Two methods are live in the same column.</b> Nikhila needs to rule on which is canonical before this data reaches a client report.</div>':""}
+  </div>
+
+  <div class="panel">
+    <div class="phead"><h2>Latest placements</h2><div class="n">most recent ${recent.length}</div></div>
+    <div class="feed">${recent.map(c => `
+      <div class="item">
+        <div class="d">${esc(c.date)}</div>
+        <div>
+          <p class="t">${c.topic
+            ? (c.link && c.link.startsWith("http")
+                ? `<a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.topic)}</a>`
+                : esc(c.topic))
+            : `<span style="color:var(--ink-3)">No topic recorded</span>${
+                c.link && c.link.startsWith("http")
+                  ? ` <a href="${esc(c.link)}" target="_blank" rel="noopener" style="font-size:12px">open</a>` : ""}`}</p>
+          <div class="m">${esc(c.client)} · ${esc(c.pub)}${c.tier?" · "+esc(c.tier):""}${c.place?" · "+esc(c.place):""}</div>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+
+  <div class="panel" id="askpanel" hidden>
+    <div class="phead"><h2>Ask the desk</h2></div>
+    <p class="lede">Answers from the figures on this page only. It has no memory between
+    questions — for anything that needs your files or your history, use Claude itself.</p>
+    <div class="ask-row">
+      <input id="q" placeholder="e.g. which Dugar brands have never been covered?" autocomplete="off">
+      <button id="go">Ask</button>
+    </div>
+    <div class="chips">
+      <span class="chip">Which clients should I chase first?</span>
+      <span class="chip">Summarise the Hotels group</span>
+      <span class="chip">What is wrong with the MAV column?</span>
+    </div>
+    <div id="ans"></div>
+  </div>`;
+
+  const t = new Date();
+  stamp.innerHTML = `${coverage.length} placements · ${roster.length} clients<br>read ${
+    t.toLocaleString(undefined,{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}`;
+
+  wireAsk();
+}
+
+function fail(title, body){
+  app.innerHTML = `<div class="panel"><div class="state">
+    <h3>${esc(title)}</h3><p style="max-width:46ch;margin:0 auto">${body}</p></div></div>`;
+  stamp.textContent = "not connected";
+}
+
+/* ---------- live read ---------- */
+(async () => {
+  const mcp = await claude.use("mcp");
+  if(!mcp){
+    fail("No connection to the tracker",
+      "This page reads the coverage workbook through your own Google Drive connection. " +
+      "Open it from your Claude account, with Google Drive connected, and the figures appear.");
+    return;
+  }
+  let got = false;
+  mcp.watchTool("Google Drive","read_file_content",{fileId:FILE_ID}, ev => {
+    if(ev.type === "error"){
+      if(got) return;                              // keep last-good data on screen
+      const c = ev.error && ev.error.code;
+      fail("Could not read the workbook",
+        c === "not_granted" ? "Access to Google Drive was declined for this page."
+        : c === "server_not_connected" ? "Google Drive is not connected on this account."
+        : "The tracker could not be reached just now. Reload to try again.");
+      return;
+    }
+    const p = ev.result && ev.result.payload;
+    const md = typeof p === "string" ? p : (p && p.fileContent);
+    if(!md){ if(!got) fail("Nothing came back","The workbook was reached but returned no content."); return; }
+    try { render(build(md)); got = true; }
+    catch(e){ if(!got) fail("Could not read that workbook","The tabs did not look as expected. Check that ALL_COVERAGE and CLIENTS are still present."); }
+  }, {refetchInterval: 300000});
+})();
+
+/* ---------- ask ---------- */
+let sampler = null;
+claude.use("sample").then(s => {
+  sampler = s;
+  const p = document.getElementById("askpanel");
+  if(s && p) p.hidden = false;
+});
+
+function fmt(t){
+  return esc(t || "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+}
+
+function wireAsk(){
+  const panel = document.getElementById("askpanel");
+  if(!panel) return;
+  if(sampler) panel.hidden = false;
+  const q = document.getElementById("q"), go = document.getElementById("go"), ans = document.getElementById("ans");
+  panel.querySelectorAll(".chip").forEach(c => c.onclick = () => { q.value = c.textContent; ask(); });
+  go.onclick = ask; q.onkeydown = e => { if(e.key === "Enter") ask(); };
+
+  async function ask(){
+    const question = q.value.trim();
+    if(!question || !sampler || !STATE) return;
+    go.disabled = true; ans.className = "answer"; ans.textContent = "Thinking…";
+    const facts = {
+      clients: STATE.roster.map(r => ({name:r.name, group:r.group, placements:r.count,
+                                       lastCoverage:r.last, daysSince:r.days})),
+      byGroup: STATE.groups,
+      tierMix: STATE.tiers,
+      mavMethods: STATE.methods,
+      alertsConfirmed: STATE.alertsDone
+    };
+    try{
+      const r = await sampler(
+        "You are answering for a luxury-hospitality PR agency's internal coverage desk.\n" +
+        "Use ONLY the JSON below. Never invent a client, publication or number.\n" +
+        "Be concise and specific — three sentences unless a list is genuinely clearer.\n" +
+        "A client with zero placements usually means nothing was monitored, not that nothing happened.\n" +
+        "MAV figures are contested estimates; never present one as fact.\n\n" +
+        "DATA:\n" + JSON.stringify(facts) + "\n\nQUESTION: " + question,
+        {onText: ({text}) => { ans.innerHTML = fmt(text); }}
+      );
+      ans.innerHTML = fmt(r.text);
+    }catch(err){
+      ans.textContent = err && err.code === "rate_limited"
+        ? "Too many questions at once — try again shortly."
+        : "That question could not be answered just now.";
+    }finally{ go.disabled = false; }
+  }
+}
+</script>

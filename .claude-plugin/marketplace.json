@@ -1,0 +1,14 @@
+{
+  "name": "katalyst",
+  "owner": {
+    "name": "Katalyst Reputation Management",
+    "url": "https://katalystrm.com"
+  },
+  "plugins": [
+    {
+      "name": "katalyst",
+      "source": "./plugins/katalyst",
+      "description": "Katalyst house skills: brand voice, coverage tracking, monthly plans and reports for the luxury hospitality roster."
+    }
+  ]
+}
