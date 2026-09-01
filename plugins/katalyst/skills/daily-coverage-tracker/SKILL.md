@@ -26,10 +26,23 @@ Fill these in once, then leave them alone.
 | Email CC | nikhilapalat@gmail.com |
 | Time budget | 20 minutes of searching |
 
-**Test mode.** While this is still being proven, set test mode on: write to a *copy* of the
-workbook, and send the email to the operator only — never to Pooja. Say at the top of the email
-that it is a test run. Turn test mode off only once three consecutive runs have produced correct
-rows.
+### Test mode is ON unless the instruction says otherwise
+
+**Default to test mode.** Unless the message that invoked this run contains the exact phrase
+`TEST MODE OFF`, you are in test mode:
+
+- Write to a *copy* of the workbook, never the live one.
+- Send the email to the operator who set the task up — **never to Pooja, never to Nikhila.**
+- Open the email with a line saying it is a test run.
+
+This defaults on deliberately. A scheduled task's instruction can be shortened or rewritten by
+whoever edits it, and the failure mode is not symmetrical: a test run that should have been live
+costs one day, while a live run that should have been a test puts an unreviewed automated email
+in a colleague's inbox under Nikhila's name. Do not infer from tone, from how polished the setup
+looks, or from "this has been working for a while" that you should go live. Require the phrase.
+
+When you do see `TEST MODE OFF`, use the live workbook and the addresses in the configuration
+table above.
 
 ## Step 0 — Load the roster
 
@@ -50,7 +63,16 @@ Track roughly how long you have spent. When you hit the cap, stop immediately �
 and go to Step 2 with whatever is confirmed. Note internally which priority you reached.
 
 **Priority 1 — Google Alerts (always, it's fast).**
-Search Gmail for `from:googlealerts-noreply@google.com newer_than:1d`. Open and verify each hit.
+Search Gmail for `from:googlealerts-noreply@google.com`, over a window that covers everything
+since the last run — **not a fixed one day.**
+
+If the task runs on weekdays only, Monday must look back to Friday morning, or Friday evening
+and the whole weekend are never seen by any run. Indian lifestyle and F&B press publishes
+heavily at weekends. Use `newer_than:1d` on Tuesday to Friday and `newer_than:4d` on Monday, or
+simply `newer_than:4d` every day and rely on the duplicate rules to drop what you have already
+logged — that is the safer default, since duplicates are cheap and missed coverage is not.
+
+Apply the same window to the date filter you use when judging Priority 2 search results.
 
 If this returns nothing, **report that as an observation, not a diagnosis.** Say "no Google
 Alerts mail found in the window" and stop there.
