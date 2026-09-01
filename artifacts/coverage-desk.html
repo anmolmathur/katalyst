@@ -464,7 +464,33 @@ function fail(title, body){
 }
 
 /* ---------- live read ---------- */
+let got = false;
+
+/* Saved to disk and opened as a file:// page, there is no Claude runtime at all — so say
+   so plainly rather than sitting on the loading skeleton forever. */
+const hasRuntime = typeof window !== "undefined"
+  && window.claude && typeof window.claude.use === "function";
+
+if(!hasRuntime){
+  fail("Open this from Claude, not from a saved file",
+    "The desk has no data of its own — it reads your coverage workbook live through your " +
+    "Google Drive connection, and that connection only exists inside Claude. Opened from " +
+    "your Downloads folder it has nothing to read.<br><br>" +
+    "Open it from the artifact link, or find <b>Katalyst Coverage Desk</b> in your artifacts gallery.");
+}
+
+/* Belt and braces: if nothing has rendered after 20 seconds, replace the skeleton with
+   something that explains itself instead of spinning indefinitely. */
+setTimeout(() => {
+  if(!got && hasRuntime && app.querySelector(".skel")){
+    fail("Still waiting on the tracker",
+      "Google Drive has not answered yet. If you were asked to allow access, approve it and " +
+      "reload. If not, check that Google Drive is connected on this account.");
+  }
+}, 20000);
+
 (async () => {
+  if(!hasRuntime) return;
   const mcp = await claude.use("mcp");
   if(!mcp){
     fail("No connection to the tracker",
@@ -472,7 +498,6 @@ function fail(title, body){
       "Open it from your Claude account, with Google Drive connected, and the figures appear.");
     return;
   }
-  let got = false;
   mcp.watchTool("Google Drive","read_file_content",{fileId:FILE_ID}, ev => {
     if(ev.type === "error"){
       if(got) return;                              // keep last-good data on screen
@@ -493,11 +518,13 @@ function fail(title, body){
 
 /* ---------- ask ---------- */
 let sampler = null;
-claude.use("sample").then(s => {
-  sampler = s;
-  const p = document.getElementById("askpanel");
-  if(s && p) p.hidden = false;
-});
+if(hasRuntime){
+  claude.use("sample").then(s => {
+    sampler = s;
+    const p = document.getElementById("askpanel");
+    if(s && p) p.hidden = false;
+  }).catch(() => {});
+}
 
 function fmt(t){
   return esc(t || "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
