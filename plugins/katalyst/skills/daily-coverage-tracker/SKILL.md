@@ -194,7 +194,7 @@ per-client tab to choose.
 | Topic / Coverage Focus | One line on what the piece was about. |
 | Link | Direct URL. `N/A - print, no URL` for print-only. |
 | Placement Type | Feature, Mention, Quote, Photo Credit, Blogger Post or LinkedIn Post. |
-| MAV (Rs.) | Tier base rate × placement multiplier, from `MAV_RATES`. Show the arithmetic in Notes. |
+| MAV (Rs.) | Tier base rate × placement multiplier, from `MAV_RATES`. **A plain number — `150000`, not `Rs. 150,000`** — so the column can be summed. Show the arithmetic in Notes. Leave empty when there is no figure. |
 | Notes | Anything needing her eye. Say plainly when reach or tier is estimated. |
 | Date Note | Qualifiers only — `approx`, `print issue`, `exact date TBD`. Keep the Date cell clean. |
 | Logged On | Today's date. |
@@ -222,24 +222,60 @@ should not pretend otherwise or quietly skip the step.
 What to do instead, in order of preference:
 
 1. If a Sheets-capable tool is available in the session, use it and append properly.
-2. Otherwise, produce the rows in the email as paste-ready lines — which is what the workflow
-   was designed around — and say plainly in the email that they still need pasting into
-   `ALL_COVERAGE`. Do not create a new spreadsheet per run: an accumulating pile of one-off
-   sheets is worse than a paste step, because the desk reads one workbook and every stray file
-   is coverage nobody can see.
+2. Otherwise, put the rows in the email in the formats Step 3 specifies, and say plainly there
+   that they still need pasting into `ALL_COVERAGE`. Do not create a new spreadsheet per run:
+   an accumulating pile of one-off sheets is worse than a paste step, because the dashboard
+   reads one workbook and every stray file is coverage nobody can see.
 
-**Paste-ready means all fourteen columns, in sheet order** — not the five-column summary
-format. A row pasted without `Group` is invisible to the dashboard's group rollup, and one
-without `Tier` cannot be valued. Fill what you can and leave a cell empty rather than
-shortening the row; a short row silently shifts every column after it.
+Either way the row carries **all fourteen columns in sheet order**. A row without `Group` is
+invisible to the dashboard's group rollup, one without `Tier` cannot be valued, and a short row
+silently shifts every column after it. Leave a cell empty rather than dropping it.
 
-Give the summary list in the email body for reading, and the full rows separately for pasting.
-They serve different purposes and should not be the same block.
+## Step 3 — The email
 
-### The machine-readable block — emit this exactly
+The email has three parts, in this order. They serve different readers and must not be merged.
 
-End the email with the rows between these two markers, one row per line, **tab-separated**, in
-sheet column order, no header:
+### Part 1 — the readable summary
+
+A one-line intro, then the finds grouped by client, one per line:
+
+`Client | Publication | Date | Placement Type`
+
+For scanning on a phone. No links here — they make it unreadable.
+
+### Part 2 — the paste table
+
+**An HTML table. Not tab-separated text.**
+
+This is the part Nikhila actually uses, and it is where the previous format failed: tabs do
+not survive Gmail's HTML rendering, so a tab-separated block pastes into a single column and
+has to be unpicked by hand. A real `<table>` pastes into Google Sheets as proper cells, because
+Sheets reads the HTML clipboard format. She selects the table, copies, clicks the first empty
+row of `ALL_COVERAGE`, pastes — and it lands in fourteen columns.
+
+Build it exactly like this:
+
+- One `<table>` with a header row carrying the fourteen column names, so she can see at a glance
+  that the columns line up before she pastes. Tell her in one line to select from the first data
+  row down, so the header does not get pasted in.
+- One `<tr>` per find, fourteen `<td>` in sheet order, **every cell present** even when empty.
+  A missing `<td>` shifts every column after it.
+- Column order: Date, Client, Group, Publication / Account, Tier, Reach / Circulation,
+  Topic / Coverage Focus, Link, Placement Type, MAV (Rs.), Notes, Date Note, Logged On,
+  MAV Method.
+- Links as bare URL text — do not wrap them in an anchor with different display text, or the
+  cell will hold a label instead of the URL, and both the deduplication and the dashboard read
+  that cell as the link.
+- **MAV as a plain number: `150000`, not `Rs. 150,000`.** A currency prefix makes the cell text,
+  and a text column cannot be summed — which defeats the point of tracking MAV at all. The sheet
+  formats the column; the row supplies the number. Leave it empty when there is no figure rather
+  than writing "N/A".
+- Dates as `YYYY-MM-DD` so they sort. Qualifiers go in `Date Note`, never in `Date`.
+- Commas inside Topic and Notes are fine — an HTML table has no delimiter to break.
+
+### Part 3 — the machine-readable block
+
+After the table, the same rows once more, tab-separated, between these markers:
 
 ```
 ---KATALYST-ROWS-START---
@@ -247,39 +283,37 @@ sheet column order, no header:
 ---KATALYST-ROWS-END---
 ```
 
-A Google Apps Script bound to the workbook reads this block and appends the rows, which is what
-removes the daily paste. Get it exactly right or that breaks:
+This one is not for a person. A Google Apps Script bound to the workbook reads the email's
+plain-text part — where tabs *do* survive — and appends the rows automatically, which is what
+removes the paste step entirely once it is switched on. Until then it is harmless.
 
-- Tabs between fields, never commas — topics and notes contain commas.
 - Fourteen fields on every line, even where several are empty.
 - No markdown, no bullets, no bold inside the block.
+- Strip tabs and newlines out of any field value first.
 - Omit the markers entirely when there is nothing to log. An empty block is fine; a malformed
   one is not.
-- Strip tabs and newlines out of any field value before writing it.
 
 The script deduplicates on the `Link` column, so a re-run or a double trigger cannot double-log.
 That safety depends on the link being the canonical URL — another reason to unwrap Google
 redirect wrappers before this point.
 
-## Step 3 — Email the finds
+### Part 4 — the coverage note
+
+Close with which block of the roster you searched, which clients you did not reach, and whether
+Google Alerts mail appeared. Two or three lines. This is what stops a client that was never
+searched being read as a client with no coverage.
+
+### Sending it
 
 **This step always runs.** It is never skipped, and never replaced by a "run didn't finish"
 message. That failure mode is what made the previous version useless.
 
-- **To:** Pooja, **CC:** Nikhila (in test mode: operator only)
+- **To:** Pooja, **CC:** Nikhila — in test mode, the operator only.
 - **Subject:** `PR Coverage – New Finds – [Date]`
-- One line of intro, then the list, then nothing. No commentary, no summary.
-- Format each find as `Client | Publication | Date | Link | Placement Type`, ready to paste.
-- Group by client where there is more than one.
+- Send as HTML, or the paste table arrives as unformatted text and the whole point is lost.
 
-Add a single closing line only when one of these is true:
-
-- The time budget cut Step 1 short — say which priority you reached, so the gap reads as expected
-  rather than as a bug.
-- Priority 1 returned nothing and the `Alert Created?` column suggests alerts are missing — say
-  that, because it is actionable and a quiet inbox is not.
-
-If nothing was found, send a short note saying so. A quiet day is information; silence is not.
+If nothing was found, send the summary and the coverage note and omit the table and the marker
+block entirely. A quiet day is information; silence is not.
 
 ## When someone asks for something narrower
 
