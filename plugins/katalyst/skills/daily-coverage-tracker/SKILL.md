@@ -52,10 +52,19 @@ and go to Step 2 with whatever is confirmed. Note internally which priority you 
 **Priority 1 — Google Alerts (always, it's fast).**
 Search Gmail for `from:googlealerts-noreply@google.com newer_than:1d`. Open and verify each hit.
 
-If this returns nothing several days running, check whether the alerts exist at all. The
-`CLIENTS` tab has an **Alert Created?** column for exactly this. Alerts that were never set up
-is a far more common cause of an empty run than an absence of coverage — say so in the email
-rather than reporting a quiet day.
+If this returns nothing, **report that as an observation, not a diagnosis.** Say "no Google
+Alerts mail found in the window" and stop there.
+
+Specifically: **do not conclude from the `CLIENTS` tab's `Alert Created?` column that alerts
+do or do not exist.** That column is a manual checklist for whoever sets the alerts up. Blank
+means nobody has ticked it — it is not evidence about Google's state, and treating it as
+evidence has already produced one confidently wrong conclusion.
+
+When alert mail is missing but live search is finding coverage, the useful thing to report is
+the discrepancy itself: *"found N pieces by search, none of which arrived as alert mail."*
+That points at delivery — wrong address, digest frequency too coarse for the search window,
+or a filter moving the mail — and lets a person check in a minute. Diagnosing it is not this
+skill's job.
 
 **Priority 2 — search the roster.**
 For each client, run its query from `CLIENTS` with the web search tool. Spend no more than about
@@ -142,6 +151,21 @@ put in front of a client. Apply the rate card, and flag any row you find carryin
 method rather than quietly leaving it.
 
 Log nothing if nothing was confirmed — but still do Step 3.
+
+### You cannot write into an existing Google Sheet
+
+The Drive connector can create, copy and read files; it cannot set cells in a sheet that
+already exists. So "append to ALL_COVERAGE" is not something you can do directly, and you
+should not pretend otherwise or quietly skip the step.
+
+What to do instead, in order of preference:
+
+1. If a Sheets-capable tool is available in the session, use it and append properly.
+2. Otherwise, produce the rows in the email as paste-ready lines — which is what the workflow
+   was designed around — and say plainly in the email that they still need pasting into
+   `ALL_COVERAGE`. Do not create a new spreadsheet per run: an accumulating pile of one-off
+   sheets is worse than a paste step, because the desk reads one workbook and every stray file
+   is coverage nobody can see.
 
 ## Step 3 — Email the finds
 
