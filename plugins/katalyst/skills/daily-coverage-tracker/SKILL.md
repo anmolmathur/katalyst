@@ -68,8 +68,20 @@ skill's job.
 
 **Priority 2 — search the roster.**
 For each client, run its query from `CLIENTS` with the web search tool. Spend no more than about
-two minutes per client — breadth across the budget beats depth on one name. Prioritise clients
-with recent activity or a known launch.
+two minutes per client — breadth across the budget beats depth on one name.
+
+**Rotate through the roster; do not restart from the same end every day.** The budget covers
+roughly nine or ten of the thirty clients per run, so a run that always begins at the top means
+the last twenty are never checked at all. Read the most recent `Logged On` dates in
+`ALL_COVERAGE` and start with the clients least recently *searched*, so every client comes round
+within about three days.
+
+Two exceptions jump the queue: a client with a known launch or event in the next fortnight (the
+`CLIENTS` setup notes flag these), and any client that appeared in Priority 1 alert mail.
+
+Name in the email which clients you covered and which you did not reach. Without that, nobody
+can tell a genuinely quiet client from one that simply was not searched — and the dashboard's
+silence ledger will read the second as the first.
 
 **Priority 3 — Tier 1 named contacts, only if time remains.**
 Take Tier 1 names from the media list and pair each with a client or category term. Skip Tier
@@ -88,6 +100,17 @@ Exclude:
 - The client's own website and social posts. Earned coverage only.
 - Anything already in `ALL_COVERAGE`. See the duplicate rules below — they matter more than they
   look.
+
+### Record the canonical URL, never a wrapper
+
+**Unwrap Google redirect links before logging anything.** Links copied out of Gmail arrive as
+`https://www.google.com/url?q=<the real url>&source=gmail&ust=...` — take the `q=` parameter
+and log that. Strip `/amp/` from AMP links too, so the same article has one form.
+
+This is not cosmetic. The duplicate rule below strips query strings, so every wrapped link
+normalises to `google.com/url` — meaning a run that logs wrappers marks all its own finds as
+duplicates of each other, and no real URL ever matches them again. It has already happened
+once.
 
 ### Duplicates: match on the normalised link, not the raw string
 
@@ -166,6 +189,14 @@ What to do instead, in order of preference:
    `ALL_COVERAGE`. Do not create a new spreadsheet per run: an accumulating pile of one-off
    sheets is worse than a paste step, because the desk reads one workbook and every stray file
    is coverage nobody can see.
+
+**Paste-ready means all fourteen columns, in sheet order** — not the five-column summary
+format. A row pasted without `Group` is invisible to the dashboard's group rollup, and one
+without `Tier` cannot be valued. Fill what you can and leave a cell empty rather than
+shortening the row; a short row silently shifts every column after it.
+
+Give the summary list in the email body for reading, and the full rows separately for
+pasting. They serve different purposes and should not be the same block.
 
 ## Step 3 — Email the finds
 
