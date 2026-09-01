@@ -233,8 +233,33 @@ format. A row pasted without `Group` is invisible to the dashboard's group rollu
 without `Tier` cannot be valued. Fill what you can and leave a cell empty rather than
 shortening the row; a short row silently shifts every column after it.
 
-Give the summary list in the email body for reading, and the full rows separately for
-pasting. They serve different purposes and should not be the same block.
+Give the summary list in the email body for reading, and the full rows separately for pasting.
+They serve different purposes and should not be the same block.
+
+### The machine-readable block — emit this exactly
+
+End the email with the rows between these two markers, one row per line, **tab-separated**, in
+sheet column order, no header:
+
+```
+---KATALYST-ROWS-START---
+2026-08-27<TAB>RAGA<TAB>Kalra<TAB>Esquire India<TAB>Tier 1<TAB>…
+---KATALYST-ROWS-END---
+```
+
+A Google Apps Script bound to the workbook reads this block and appends the rows, which is what
+removes the daily paste. Get it exactly right or that breaks:
+
+- Tabs between fields, never commas — topics and notes contain commas.
+- Fourteen fields on every line, even where several are empty.
+- No markdown, no bullets, no bold inside the block.
+- Omit the markers entirely when there is nothing to log. An empty block is fine; a malformed
+  one is not.
+- Strip tabs and newlines out of any field value before writing it.
+
+The script deduplicates on the `Link` column, so a re-run or a double trigger cannot double-log.
+That safety depends on the link being the canonical URL — another reason to unwrap Google
+redirect wrappers before this point.
 
 ## Step 3 — Email the finds
 
