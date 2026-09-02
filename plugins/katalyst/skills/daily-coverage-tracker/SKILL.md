@@ -24,7 +24,7 @@ Fill these in once, then leave them alone.
 | Media list | `Katalyst_Master_Media_List 2026` |
 | Email to | pooja.katalyst@gmail.com |
 | Email CC | nikhilapalat@gmail.com |
-| Time budget | 40 minutes — a full sweep of all 30, then verification |
+| Time budget | 40 minutes — feed sweep, then all 30 clients, then verification |
 
 ### Test mode is ON unless the instruction says otherwise
 
@@ -59,12 +59,72 @@ piece twice.
 
 ## Step 1 — Find coverage, inside 40 minutes
 
-Track roughly how long you have spent. The cap protects the run from never finishing; it is
-not a target to fill. Most days will come in well under it, because most clients return nothing
-and nothing is what takes no time to verify.
+Three channels, in this order. **Channel A is the one that catches same-day coverage.** Read the
+next paragraph before changing anything in this section, because the ordering is not arbitrary.
 
-**Priority 1 — Google Alerts (always, it's fast).**
-Search Gmail for `from:googlealerts-noreply@google.com`, over a window that covers everything
+### Why the order matters — read this before touching it
+
+Web search is ranked by *relevance*, not recency. Search "Raga Gaggan" and you get the
+restaurant's own site, Wikipedia, Instagram and the big launch pieces from a fortnight ago. The
+review that a trade title published three hours ago is on page four, if it is indexed at all.
+This is not a bad query — it is what a relevance-ranked index is built to do, and no amount of
+rewording changes it. A run that relies only on per-client search will keep reporting "quiet
+day" on days when Nikhila can find four placements by hand in ninety seconds. That has already
+happened, and it is the reason this section was rebuilt.
+
+What she does by hand is different in kind: she searches Google with the **past-24-hours filter**
+on, which throws away everything canonical and leaves only what is new. There is no such filter
+here. So the run has to get recency a different way — by reading publications' own feeds, which
+are ordered newest-first by construction.
+
+The inversion is the whole trick. Do not ask *"is there news about client X?"* thirty times.
+Ask *"here is everything this beat published today — which of it is ours?"* once. That is how a
+human clipping service works, and it is why it does not miss things.
+
+### Channel A — sweep the trade feeds (primary, always, first)
+
+Fetch each feed below and read every item published inside the window from Step 1's date rules.
+Ten fetches, recency-ordered, no ranking to fight. This channel is cheap and must always
+complete.
+
+| Publication | Feed |
+|---|---|
+| Elle Gourmet India | `https://ellegourmet.in/rss` |
+| HospiBuz | `https://hospibuz.com/rss` |
+| BW Travel | `https://www.bwtravel.com/rss` |
+| Local Samosa | `https://www.localsamosa.com/rss` |
+| MediaBrief | `https://mediabrief.com/feed/` |
+| Business of Food | `https://www.businessoffood.in/feed/` |
+| The Nod Mag | `https://thenodmag.com/feed/` |
+| Finely Chopped | `https://finelychopped.net/feed/` |
+| Restaurant India (Operations) | `https://www.restaurantindia.in/rss/operations` |
+| Indian Food Freak | `https://indianfoodfreak.com/feed/` |
+
+To add a publication, add a row. To drop one that has gone quiet or started 403ing, delete its
+row and say so in the email. A feed that fails is worth one line in the email — "HospiBuz feed
+returned 403" — and nothing more; do not spend budget retrying it.
+
+**Match each item against the roster three ways**, because trade press often names the parent,
+not the outlet:
+
+1. The client name and its qualifier, from `CLIENTS`.
+2. The **group** — Kalra, Dugar, Udeshi, the hotel brand, the parent company. A piece headlined
+   about a group launch is coverage for the client inside it.
+3. **People** — the chef, GM or founder attached to that client in the `CLIENTS` notes. "Chef
+   Jacopo Avigo at Oliveto" is St. Regis Goa coverage; a query for "Oliveto" alone may not
+   rank it.
+
+An item that matches goes straight to the candidate list. You already have its title, date and
+canonical link from the feed, so verification is usually one page-open to confirm the piece is
+genuinely about the client.
+
+Some titles that matter will not name a client at all — a roundup like "new restaurant openings
+this week" can carry a client in the body. Open a roundup if its subject overlaps the roster's
+beat; do not open every general-interest item.
+
+### Channel B — Google Alerts mail
+
+Search Gmail for `from:googlealerts-noreply@google.com` over a window that covers everything
 since the last run — **not a fixed one day.**
 
 If the task runs on weekdays only, Monday must look back to Friday morning, or Friday evening
@@ -73,7 +133,7 @@ heavily at weekends. Use `newer_than:1d` on Tuesday to Friday and `newer_than:4d
 simply `newer_than:4d` every day and rely on the duplicate rules to drop what you have already
 logged — that is the safer default, since duplicates are cheap and missed coverage is not.
 
-Apply the same window to the date filter you use when judging Priority 2 search results.
+Apply the same window to the date filter you use when judging Channel C search results.
 
 If this returns nothing, **report that as an observation, not a diagnosis.** Say "no Google
 Alerts mail found in the window" and stop there.
@@ -83,52 +143,53 @@ do or do not exist.** That column is a manual checklist for whoever sets the ale
 means nobody has ticked it — it is not evidence about Google's state, and treating it as
 evidence has already produced one confidently wrong conclusion.
 
-When alert mail is missing but live search is finding coverage, the useful thing to report is
-the discrepancy itself: *"found N pieces by search, none of which arrived as alert mail."*
-That points at delivery — wrong address, digest frequency too coarse for the search window,
-or a filter moving the mail — and lets a person check in a minute. Diagnosing it is not this
-skill's job.
+When alert mail is missing but Channel A or C is finding coverage, the useful thing to report is
+the discrepancy itself: *"found N pieces by feed and search, none of which arrived as alert
+mail."* That points at delivery — wrong address, delivery set to RSS rather than email, digest
+frequency too coarse for the window, or a filter moving the mail — and lets a person check in a
+minute. Diagnosing it is not this skill's job.
 
-**Priority 2 — sweep all thirty, then verify.**
+### Channel C — per-client search, as a backstop
 
 Every client is searched every run. No rotation, no blocks. The point of this task is that
-nobody has to wonder whether a client was looked at.
+nobody has to wonder whether a client was looked at. But understand what this channel is for:
+it catches the publications not in the feed table — nationals, wires, foreign titles — and it
+is weak on anything published in the last few hours. Channel A is what catches those.
 
-That works because searching and verifying cost very different amounts, and the old design
-confused them. Running a client's query is seconds. Opening pages to confirm a hit is what
-takes minutes — and on a typical day only two or three clients have anything to confirm. So
-the budget should govern *verification depth*, not *how many clients get looked at*.
+Run each client's query from `CLIENTS`, in roster order, all thirty. Read titles and dates only;
+do not open pages yet. Never search the bare client name — a third of this roster is
+unsearchable without its qualifier ("Masque" returns theatre and tech; "Swan", "Paradox",
+"Circle 69", "Papaya", "Gigi" and "Raga" are all common words).
 
-**Pass A — sweep, no verification.** Run each client's query from `CLIENTS`, in roster order,
-all thirty. Read the result titles and dates only; do not open pages yet. Note anything that
-looks like it might be new coverage inside the window, and move on. Never search the bare
-client name — a third of this roster is unsearchable without its qualifier ("Masque" returns
-theatre and tech; "Swan", "Paradox", "Circle 69", "Papaya", "Gigi" and "Raga" are all common
-words).
+**Where the `CLIENTS` notes flag a launch, opening, residency, appointment or award inside the
+last fortnight, run a second query that describes the event rather than naming the client** —
+"Serious Slice Indiranagar third outlet", "Chef Jacopo Avigo Oliveto St Regis Goa". Descriptive
+queries reach the trade coverage that brand-name queries bury, because they match how the piece
+is actually headlined. This is worth roughly one extra query for the two or three clients with
+something live, not for all thirty.
 
-This pass is cheap and must always complete. If the time budget is somehow exhausted here,
-that is a real problem worth reporting, not a normal outcome.
+### Then verify the candidates
 
-**Pass B — verify the candidates.** Now open pages and confirm, spending the remaining budget.
-Work in this order:
+Now open pages and confirm, spending the remaining budget. Work in this order:
 
-1. Anything that appeared in Priority 1 alert mail.
-2. Clients with a launch or event inside the next fortnight — the `CLIENTS` setup notes flag
-   these.
-3. Everything else, Tier 1 publications before Tier 3.
+1. Anything that appeared in Google Alerts mail.
+2. Anything from Channel A — it is dated by the feed, so it is fast to confirm.
+3. Clients with a launch or event inside the next fortnight.
+4. Everything else, Tier 1 publications before Tier 3.
 
 If the budget runs out with candidates still unverified, **list them in the email as "found,
 not yet verified", with client, publication and link.** Do not log them — an unverified hit
 never enters the sheet. But do not discard them silently either: a person can check three
 links in a minute, and next run will pick them up again.
 
-**Report all thirty as searched.** Say plainly that every client was swept, then which had
-candidates, which were verified, and which are carrying over. That is the sentence that lets
-Nikhila stop wondering — and it is only true because Pass A always finishes.
+**Report all thirty as searched, and report the feed sweep separately.** Say plainly that every
+feed was read and every client was swept, then which had candidates, which were verified, and
+which are carrying over. That is the sentence that lets Nikhila stop wondering — and it is only
+true because Channels A and C both always finish.
 
-**Priority 3 — Tier 1 named contacts, only if time remains.**
-Take Tier 1 names from the media list and pair each with a client or category term. Skip Tier
-2 and 3 and skip LinkedIn crawling — that belongs to the weekly media-list task, not here.
+**A quiet day is only credible if Channel A ran.** If the feeds could not be fetched, say the
+day was unverified rather than quiet. The difference matters: she checks by hand when we say
+quiet and we are wrong, and that is the whole trust problem this task exists to solve.
 
 ### Verifying a hit
 
@@ -304,9 +365,10 @@ redirect wrappers before this point.
 
 ### Part 4 — the coverage note
 
-Close with which block of the roster you searched, which clients you did not reach, and whether
-Google Alerts mail appeared. Two or three lines. This is what stops a client that was never
-searched being read as a client with no coverage.
+Three or four lines, covering: how many trade feeds were read and whether any failed, that all
+thirty clients were swept, which clients you did not reach verification on, and whether Google
+Alerts mail appeared. This is what stops a client that was never searched being read as a
+client with no coverage — and what stops a failed feed sweep being read as a quiet day.
 
 ### Sending it
 
