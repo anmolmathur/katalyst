@@ -104,6 +104,17 @@ To add a publication, add a row. To drop one that has gone quiet or started 403i
 row and say so in the email. A feed that fails is worth one line in the email — "HospiBuz feed
 returned 403" — and nothing more; do not spend budget retrying it.
 
+**Known blind spots — these have no fetchable feed, so Channel C is the only way to reach
+them.** Hospemag publishes nothing usable. Condé Nast India's stable — Vogue, GQ, Architectural
+Digest, Condé Nast Traveller — plus Travel + Leisure Asia, Esquire India, Hotelier India,
+Hospitality Biz India and Express Hospitality all refuse the fetch. Several of those are Tier 1
+for this roster, so when a client has something live, search for it by name in Channel C and do
+not assume the feed sweep covered it.
+
+One consolation: a single event usually appears across several titles in a week, so a blocked
+publication often still reaches you through one that isn't. The Oliveto residency ran on both
+Hospemag (no feed) and BW Travel (feed) on the same day.
+
 **Match each item against the roster three ways**, because trade press often names the parent,
 not the outlet:
 
