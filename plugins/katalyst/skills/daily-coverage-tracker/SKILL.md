@@ -104,16 +104,34 @@ To add a publication, add a row. To drop one that has gone quiet or started 403i
 row and say so in the email. A feed that fails is worth one line in the email — "HospiBuz feed
 returned 403" — and nothing more; do not spend budget retrying it.
 
-**Known blind spots — these have no fetchable feed, so Channel C is the only way to reach
-them.** Hospemag publishes nothing usable. Condé Nast India's stable — Vogue, GQ, Architectural
-Digest, Condé Nast Traveller — plus Travel + Leisure Asia, Esquire India, Hotelier India,
-Hospitality Biz India and Express Hospitality all refuse the fetch. Several of those are Tier 1
-for this roster, so when a client has something live, search for it by name in Channel C and do
-not assume the feed sweep covered it.
+**Known blind spots, and be honest about how bad they are.** Two different failures get
+confused here, and only one of them Channel C can rescue.
 
-One consolation: a single event usually appears across several titles in a week, so a blocked
-publication often still reaches you through one that isn't. The Oliveto residency ran on both
-Hospemag (no feed) and BW Travel (feed) on the same day.
+*No feed, but findable by search:* Hospemag, Hotelier India, Hospitality Biz India, Express
+Hospitality, Esquire India. The feed sweep misses these; a Channel C query can still surface
+them. Search by name when a client has something live.
+
+*Neither fetchable nor indexed:* **Condé Nast India's stable — Vogue India, GQ India,
+Architectural Digest India, Condé Nast Traveller India — and Travel + Leisure Asia.** The
+search index available here is US-weighted, and these titles barely appear in it at all; a
+direct query naming the publication and the client returns Wikipedia, Tripadvisor and booking
+sites instead. **Channel C does not reach them. Nothing in Channels A or C does.** These are
+Tier 1 for a luxury hospitality roster, so this is the real gap in the task, not a footnote.
+
+The only automated channel that sees them is **Channel B, the inbox** — Google's index is
+global and does carry them, so a working Google Alert on a client name will surface a Vogue
+India piece that no search here can find. That is the strongest argument for getting alert mail
+delivery fixed, and for subscribing the tracker inbox to those titles' own newsletters.
+
+**Never report a quiet day for a client whose likely coverage sits in one of those titles
+without saying so.** If a client had a launch or event and the run found nothing, add one line:
+"nothing found, but the Condé Nast titles are not reachable from here — worth a manual check."
+A wrong quiet day is the specific failure this task exists to prevent.
+
+One partial consolation: a single event usually appears across several titles in a week, so a
+blocked publication often still reaches you through one that isn't. The Oliveto residency ran
+on both Hospemag (no feed) and BW Travel (feed) on the same day. This does not cover an
+exclusive feature, which is exactly the coverage that matters most.
 
 **Match each item against the roster three ways**, because trade press often names the parent,
 not the outlet:
@@ -133,10 +151,19 @@ Some titles that matter will not name a client at all — a roundup like "new re
 this week" can carry a client in the body. Open a roundup if its subject overlaps the roster's
 beat; do not open every general-interest item.
 
-### Channel B — Google Alerts mail
+### Channel B — the inbox: Google Alerts, and publisher newsletters
+
+This is the only channel that reaches the publications Channels A and C cannot see, because it
+rides on Google's index rather than the one available here. Treat it as load-bearing, not as a
+nice-to-have that happens to be empty.
 
 Search Gmail for `from:googlealerts-noreply@google.com` over a window that covers everything
 since the last run — **not a fixed one day.**
+
+Also read any publisher newsletters that have been subscribed to the tracker inbox — Condé Nast
+Traveller India, Vogue India, Travel + Leisure Asia and the like. Newsletters are curated and
+will miss short items, so they are a top-up on the blind spots rather than full coverage of
+them. Match their contents against the roster the same three ways as Channel A.
 
 If the task runs on weekdays only, Monday must look back to Friday morning, or Friday evening
 and the whole weekend are never seen by any run. Indian lifestyle and F&B press publishes
