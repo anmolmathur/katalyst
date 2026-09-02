@@ -1,0 +1,209 @@
+---
+name: alert-keyword-research
+description: Work out the best Google Alerts search terms for the Katalyst client roster — permanent brand terms plus time-bound terms derived from the press releases the team has actually pitched — and produce a paste-ready keyword sheet. Use when setting up alerts, refreshing them after new releases go out, or when the coverage tracker keeps missing stories.
+---
+
+# Alert keyword research
+
+Works out what to search for, so the daily coverage tracker stops searching for the wrong thing.
+
+## Why this exists
+
+Nikhila finds coverage the tracker misses, and the reason is not that she searches harder. In
+her words: *"I'm able to find it because I know what I'm searching for."* She knows a festival
+launched at Oliveto last week, so she searches the festival. The tracker only knew the client
+was called Oliveto, so it searched a brand name and got the restaurant's own website.
+
+This was confirmed by testing. `"Raga Gaggan"` returns the restaurant's site, Wikipedia and
+Instagram — the review published that morning appears nowhere. `Serious Slice Indiranagar third
+outlet` returns the trade coverage immediately. **Same story, same day, same index. The
+difference is entirely in the query.**
+
+So the job here is to close that gap in advance: read what the team has actually pitched, and
+write the queries a journalist's headline will match.
+
+**What this skill does not do.** It does not write a PR strategy, summarise releases for their
+own sake, log coverage, or build a report. The press releases are input for deriving search
+terms and nothing else. Do not reproduce release bodies, client contact details or embargoed
+material in the output — a keyword sheet needs names and campaign titles, which are published
+anyway, and nothing more.
+
+## Configuration
+
+| Setting | Value |
+|---|---|
+| Keyword sheet | `Katalyst_PR_Coverage_WORKING` — tab `KEYWORDS` (create it if absent) |
+| Client roster | Same workbook, tab `CLIENTS` |
+| Release window | Last 90 days, weighted heavily to the last 30 |
+| Cadence | Weekly, or on demand when a batch of releases goes out |
+| Target volume | 150 excellent alerts, not 700 mediocre ones |
+
+## Step 1 — Read the roster
+
+Read `CLIENTS`. For each active client note the official name, the common media name, the city,
+the group, and the existing query if there is one. That existing query is a starting point to
+improve on, not something to preserve.
+
+## Step 2 — Find what has actually been pitched
+
+Search Gmail for the team's recent press activity. Search each of these separately rather than
+as one giant query, because a single over-constrained search is how this step quietly returns
+nothing:
+
+- `from:pooja.katalyst@gmail.com newer_than:90d`
+- Sender, recipient and cc searches for Disha and Sazia at their Katalyst addresses
+- `from:me newer_than:90d (press OR media OR launch OR pitch)`
+- Subject searches: `subject:(press release OR media release OR press note OR media note OR pitch OR launch)`
+
+Look for press and media releases, story and media pitches, launch and festival announcements,
+new menus, chef collaborations and residencies, appointments, events, awards, partnerships,
+wellness and festive programmes, wedding announcements.
+
+**Weight the newest most heavily.** Where a client has several releases, the current campaign
+matters more than one from two months ago. Note the date of each release — you will need it for
+the `Source` and `Expires` columns.
+
+## Step 3 — Open the releases, do not skim subject lines
+
+A subject line gives you the client. The body gives you the *hook* — and the hook is the whole
+point of this exercise.
+
+From each release, pull the distinctive named things a journalist would repeat: campaign or
+festival name, visiting chef, resident chef, the restaurant and hotel, the collaboration title,
+a named menu or package, an event title, a new appointment and the role, an award name, a
+cuisine or concept, the destination.
+
+Ignore adjectives. "Curated", "immersive", "elevated" and "bespoke" appear in every release ever
+written and match nothing.
+
+## Step 4 — Think like the headline, not like the brand
+
+For each candidate term ask: **if this story runs, what words appear together in the headline,
+the URL slug, or the first paragraph?** Then write the smallest combination that isolates it.
+
+A festival called Mezzo at Oliveto in The St. Regis Goa Resort should not produce `Mezzo` —
+that is a common word and will bury you. It should produce something like `"Mezzo" "Oliveto"`,
+`"Mezzo Festival" Goa`, or `"<chef name>" "Oliveto"`.
+
+The target is the sweet spot between specificity and discoverability. Too broad and the alert is
+noise; too narrow and it matches only the press release's own wording, which is precisely what
+journalists rewrite.
+
+**Write variations where the wording is likely to shift.** A journalist may drop "Festival",
+shorten "The St. Regis Goa Resort" to "St Regis Goa", or lead with the chef rather than the
+venue. Two simple alerts that each catch a plausible phrasing beat one clever one that catches
+neither.
+
+## Step 5 — Two kinds of keyword, and the difference matters
+
+**Evergreen** — permanent, tied to the brand: the property, the general manager, the executive
+chef, an important spokesperson, a named restaurant or bar, a distinctive named spa or space.
+Qualify anything generic: `"The Grill" "Vivanta Hyderabad"`, never `"The Grill"`. Skip generic
+facilities — "the spa", "the ballroom", "Sunday brunch" — unless the name is genuinely
+distinctive.
+
+**Campaign** — derived from a current release, and **time-bound**. This is the highest-yield
+category and the one nobody has been using.
+
+### Campaign keywords must expire
+
+This is the part not to skip. A festival alert is gold for three weeks and pure noise by
+December, and an alert list nobody prunes becomes an inbox people stop reading — which is how
+the last monitoring setup died.
+
+Give every campaign keyword an **`Expires`** date: the event end date plus three weeks, or the
+release date plus 60 days where there is no event. Nothing gets a campaign keyword without one.
+On each run, list expired rows under **RETIRE THESE** so they can be deleted from Google Alerts,
+and do not re-propose them.
+
+## Step 6 — Keep the queries simple
+
+Google Alerts is not a search engine with a query planner behind it. Prefer `"Campaign" "Hotel"`
+over a Boolean construction. Use quotation marks for distinctive phrases. Use `OR` only where it
+genuinely earns its place. **If two simple alerts are more reliable than one complicated one,
+recommend two** — the goal is coverage found, not elegance.
+
+Note for whoever sets these up: unquoted words in a Google Alert are ANDed together, so a
+flattened query that lost its quotation marks will match almost nothing. Several of this
+roster's existing alerts failed exactly that way. Quotation marks are load-bearing.
+
+## Step 7 — Cut duplicates, then prioritise
+
+Drop alerts that do the same work. If `"Rambagh Palace"` reliably catches what
+`"Rambagh Palace Jaipur"` catches, keep one. Keep both only where the qualifier materially
+improves precision.
+
+Then classify every surviving alert:
+
+- **ESSENTIAL** — high likelihood of finding real coverage. Add it.
+- **RECOMMENDED** — useful additional monitoring.
+- **OPTIONAL** — plausible, but likely to generate noise. Do not add by default.
+
+Be hard about this. A hundred and fifty alerts that get read beat seven hundred that do not.
+
+## Step 8 — The output
+
+Three parts, in this order.
+
+### Part 1 — the keyword sheet
+
+Grouped by client, and within each client, **ALWAYS-ON ALERTS** then **CURRENT PR RELEASE
+ALERTS**. Columns:
+
+`Client | Property / Brand | Google Alert Search Term | Keyword Type | What It Tracks | Source | Priority | Expires`
+
+`Keyword Type` is one of: `EVERGREEN - BRAND`, `EVERGREEN - PERSON`, `EVERGREEN - RESTAURANT`,
+`EVERGREEN - OTHER`, `CURRENT PR RELEASE`.
+
+`Source` is `BRAND RESEARCH` for evergreen rows, and the release name and date for campaign rows
+— `Press Release - Mezzo Festival - 28 Aug 2026`.
+
+`Expires` is blank for evergreen rows and a date for every campaign row.
+
+**Render this as an HTML `<table>`, not tab-separated text.** Tabs do not survive rendering and
+paste into a single column; an HTML table pastes into Google Sheets as real cells. This was
+learned the hard way on the coverage tracker.
+
+### Part 2 — the counts
+
+Total clients analysed; total always-on keywords; total campaign keywords; totals for ESSENTIAL,
+RECOMMENDED and OPTIONAL; and how many existing keywords are being retired.
+
+### Part 3 — GOOGLE ALERTS TO ADD NOW
+
+Only the ESSENTIAL and RECOMMENDED queries, one per line, nothing else on the line — no numbering,
+no commentary, no priority label. This block is for copying straight into Google Alerts.
+
+Follow it with **RETIRE THESE**: expired campaign queries, one per line.
+
+## Setting the alerts up
+
+**Do not create Google Alerts automatically, and never inside a scheduled run.** Alerts are
+standing configuration in Nikhila's Google account; a hundred and fifty of them created
+unattended, with no one watching for a misfired query, is a mess that takes longer to unpick
+than it saved. The paste-ready block exists so a person can add them deliberately.
+
+If she wants help doing it, that is a separate, watched session with a browser — in batches, with
+her present, confirming as it goes. Not this skill, and not a scheduled task.
+
+**Sequencing matters more than volume.** As of 2 September 2026 no mail from
+`googlealerts-noreply@google.com` has ever arrived in the tracker inbox, though thirty alerts
+demonstrably exist. Adding a hundred and fifty more before that is diagnosed multiplies a broken
+thing. Fix delivery on the existing alerts first — check that each one's "Deliver to" is an
+email address and not an RSS feed, and that the address is the inbox the tracker reads — then
+confirm mail arrives, then add.
+
+Recommended alert settings, unless there is a reason otherwise: **at most once a day**, sources
+**Automatic**, language **English**, region **India** (or **Any Region** for brands and people
+with genuine international press), how many **All results** — not "only the best results", which
+silently discards trade coverage. Do not change her account or the delivery address.
+
+## How this feeds the coverage tracker
+
+The `KEYWORDS` tab is what the `daily-coverage-tracker` skill should search from. Evergreen
+rows replace the single static query per client; unexpired campaign rows are the high-yield
+additions, and should be searched for the clients that have them **before** the evergreen terms,
+because a live campaign is where the week's coverage actually is.
+
+That is the whole loop: research the keywords, set the alerts, and let the tracker search what
+the press is actually being told about rather than guessing from a brand name.

@@ -44,7 +44,7 @@ looks, or from "this has been working for a while" that you should go live. Requ
 When you do see `TEST MODE OFF`, use the live workbook and the addresses in the configuration
 table above.
 
-## Step 0 — Load the roster
+## Step 0 — Load the roster and the keywords
 
 Read the `CLIENTS` tab. Each row gives you a client name, its group, and — critically — a
 **Google Alerts query** written to survive that client's name.
@@ -53,6 +53,30 @@ Read the `CLIENTS` tab. Each row gives you a client name, its group, and — cri
 this roster is unsearchable without its qualifier: "Masque" returns theatre and tech, "Swan",
 "Paradox", "Circle 69", "Papaya", "Gigi" and "Raga" are all common words. Searching the bare
 name is the single biggest reason past runs found nothing.
+
+**Then read the `KEYWORDS` tab if it exists**, produced by the `alert-keyword-research` skill.
+It carries better queries than `CLIENTS` does, and in particular it carries **campaign
+keywords** — terms taken from the press releases the team has actually pitched.
+
+This matters more than it looks. Nikhila finds coverage this task misses because she knows a
+festival launched last week, so she searches the festival; the task knew only that the client
+was called Oliveto, so it searched a brand name and got the restaurant's own website. The
+`KEYWORDS` tab is how that knowledge reaches the run.
+
+Use it like this:
+
+- **Unexpired campaign rows first**, for the clients that have them. A client with a live
+  campaign is where this week's coverage actually is, so search those terms before the
+  brand terms.
+- **Evergreen rows** replace the single static `CLIENTS` query for that client. Where both
+  exist, prefer `KEYWORDS`.
+- **Skip any campaign row whose `Expires` date has passed** — a September festival is noise in
+  December. Do not search it, and mention in the email that expired keywords were skipped so
+  somebody knows the tab needs a refresh.
+- Where `KEYWORDS` has no row for a client, fall back to the `CLIENTS` query.
+
+If the tab does not exist yet, carry on with `CLIENTS` alone and say so in one line of the
+email — it is a gap worth closing, not a reason to stop.
 
 Also read the existing `ALL_COVERAGE` rows. You need the `Link` column to avoid logging the same
 piece twice.
