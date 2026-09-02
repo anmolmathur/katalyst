@@ -24,7 +24,7 @@ Fill these in once, then leave them alone.
 | Media list | `Katalyst_Master_Media_List 2026` |
 | Email to | pooja.katalyst@gmail.com |
 | Email CC | nikhilapalat@gmail.com |
-| Time budget | 40 minutes — feed sweep, then all 30 clients, then verification |
+| Time budget | 40 minutes — feeds, inbox, all 30 clients, Bing for the big names, then verify |
 
 ### Test mode is ON unless the instruction says otherwise
 
@@ -206,6 +206,41 @@ queries reach the trade coverage that brand-name queries bury, because they matc
 is actually headlined. This is worth roughly one extra query for the two or three clients with
 something live, not for all thirty.
 
+### Channel D — Bing News, for the national press and wire pickup
+
+Google News RSS cannot be used. It is blocked by robots policy, as are Google Alerts' own RSS
+feeds and the free news APIs built on Google's index. Do not spend budget rediscovering this.
+
+Bing News does work, and it reaches something the other channels miss entirely: **Indian
+national dailies and wire pickup** — Indian Express, NDTV, Telegraph India, Mid-Day, Free Press
+Journal, The Tribune, The Wire, ANI, MSN. Channel A is trade press only and Channel C's index is
+US-weighted, so without this a national story about a client can pass unnoticed.
+
+One query per client, of this exact shape:
+
+`https://www.bing.com/news/search?q=%22<quoted client name>%22&format=RSS&cc=IN`
+
+Rules learned by testing, so do not improvise here:
+
+- **Quote the client name.** Unquoted terms return noise.
+- **Never use `OR`** in the query — it returns an empty feed.
+- **Never add `sortby=Date`** — it returns an HTML page instead of a feed.
+- Expect zero items for small independents. "Serious Slice" returns nothing; "Sofitel Mumbai
+  BKC" returns five. This channel is for clients with national reach, not for the whole roster.
+
+**Do not run this for all thirty.** Run it for the hotel and group clients, the named chefs, and
+any client with a launch or event live — roughly a dozen. Each query is a fetch, and the budget
+is better spent on Channel A, which is what actually catches same-day coverage. **If the run is
+short of time, Channel D is the first thing to cut.**
+
+Two cautions on what comes back. It is **not reliably same-day** — a story the trade feeds
+carried this morning may not appear here for a day or two, so a Bing hit is a safety net, not a
+freshness check. And **wire releases arrive many times over**: one Sofitel PTI release came back
+four times, as Tribune, The Wire, ANI and Webindia123. Those are four genuine placements by the
+duplicate rules below and should be logged as four, but say so in the email — a day that looks
+like a spike is often one release picked up widely, and Nikhila should see it described that way
+rather than counted silently.
+
 ### Then verify the candidates
 
 Now open pages and confirm, spending the remaining budget. Work in this order:
@@ -213,7 +248,8 @@ Now open pages and confirm, spending the remaining budget. Work in this order:
 1. Anything that appeared in Google Alerts mail.
 2. Anything from Channel A — it is dated by the feed, so it is fast to confirm.
 3. Clients with a launch or event inside the next fortnight.
-4. Everything else, Tier 1 publications before Tier 3.
+4. Channel D hits, checking the date carefully — Bing's index lags, so an item can be months old.
+5. Everything else, Tier 1 publications before Tier 3.
 
 If the budget runs out with candidates still unverified, **list them in the email as "found,
 not yet verified", with client, publication and link.** Do not log them — an unverified hit
