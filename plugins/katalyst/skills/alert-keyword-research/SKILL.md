@@ -116,6 +116,29 @@ release date plus 60 days where there is no event. Nothing gets a campaign keywo
 On each run, list expired rows under **RETIRE THESE** so they can be deleted from Google Alerts,
 and do not re-propose them.
 
+## Step 5b — Verify every person's name against the press
+
+**A quoted name that isn't how the press writes it is a permanently dead alert**, and it fails
+silently — it never matches, and nobody ever finds out.
+
+This is not hypothetical. A first run proposed `"Anita Gomes" "St. Regis Goa"` for the St. Regis
+Goa marcom director. Her name in every published piece — BW Hotelier, HospiBuz, Travel And Tour
+World — is **Anita Dacosta E Gomes**. A quoted phrase requires exact adjacency, so
+`"Anita Gomes"` matches none of them. The alert would have run for years finding nothing.
+
+So for every `EVERGREEN - PERSON` row, before writing the query:
+
+1. **Search the name once** and look at how publications actually render it — middle names,
+   double-barrelled surnames, initials, honorifics, common misspellings.
+2. **Quote the full published form**, not the short form you saw in an email signature or a
+   client's own shorthand.
+3. Where the press is genuinely inconsistent, write two rows rather than one clever query.
+4. If you cannot confirm the spelling, mark the row `OPTIONAL` and say plainly in
+   `What It Tracks` that the spelling is unverified. Do not quote a guess.
+
+The same care applies to restaurant and campaign names taken from internal notes — the client's
+internal working title is often not the name in the release.
+
 ## Step 6 — Keep the queries simple
 
 Google Alerts is not a search engine with a query planner behind it. Prefer `"Campaign" "Hotel"`
@@ -126,6 +149,25 @@ recommend two** — the goal is coverage found, not elegance.
 Note for whoever sets these up: unquoted words in a Google Alert are ANDed together, so a
 flattened query that lost its quotation marks will match almost nothing. Several of this
 roster's existing alerts failed exactly that way. Quotation marks are load-bearing.
+
+### Two rules the dual purpose imposes
+
+The `KEYWORDS` tab is read by two different things — Google Alerts, and the coverage tracker,
+which runs the same strings against web search and Bing News. They do not tolerate the same
+syntax, so:
+
+**Avoid `OR`.** Google Alerts accepts it; **Bing News returns an empty feed for any query
+containing `OR`** — tested and confirmed. A row like `"St. Regis Goa" OR "St Regis Goa"` works in
+one channel and silently returns nothing in the other. Write the single best form, or two rows.
+In that example one row is enough anyway: search engines ignore the full stop, so
+`"St. Regis Goa"` already catches `St Regis Goa`.
+
+**Don't AND a category word onto an already-distinctive phrase.** Every unquoted word is an AND
+that can only lose coverage. `"Serious Slice" pizza` misses any piece about Serious Slice that
+doesn't use the word *pizza*; `"Anirudh Kheny" restaurant` misses a profile that calls him a
+founder. The quoted name was already specific — the extra word buys nothing and costs matches.
+Qualify generic names (`"Miri" "St. Regis Goa"` is right, because *Miri* alone is a common word);
+leave distinctive ones alone.
 
 ## Step 7 — Cut duplicates, then prioritise
 
