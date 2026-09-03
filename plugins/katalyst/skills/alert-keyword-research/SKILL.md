@@ -105,6 +105,31 @@ distinctive.
 **Campaign** — derived from a current release, and **time-bound**. This is the highest-yield
 category and the one nobody has been using.
 
+### Never write an unannounced deal into the sheet
+
+**If the story is not public yet, it does not go in the sheet at all** — not as a row, not as
+OPTIONAL, not with a note saying it is unconfirmed. Leave it out entirely and mention in the
+chat reply that a keyword is being held back until the announcement, without naming the partner.
+
+The `KEYWORDS` tab is a shared Google Sheet. It has been link-shared with edit access, other
+people at Katalyst open it, and it is not a confidential document. A row reading
+`"<celebrity name>" "<hotel>"` with a source note saying *commercials sent, not yet confirmed*
+is a leak of a live negotiation sitting in a shared file — and the explanatory note makes it
+worse, because it documents the deal rather than merely hinting at it.
+
+This is not hypothetical. A run proposed rows for two unannounced St. Regis Goa collaborations
+taken from internal threads — one with commercials still under negotiation, one an unconfirmed
+influencer booking. Both named real public figures. Neither appears anywhere in the press;
+checked. For a reputation agency, that sheet leaking is a client-losing event, and the
+keyword sheet is not worth that risk.
+
+The test is simple: **has this been announced, or has coverage already run?** If yes, it is fair
+game. If it is a pitch, a proposal, an approval thread, a commercial under negotiation, or a
+booking still being confirmed, hold it. Add the keyword the day it goes public — that is soon
+enough, because coverage cannot precede the announcement anyway.
+
+Being right about a keyword is worth nothing if the sheet costs Nikhila a client.
+
 ### Campaign keywords must expire
 
 This is the part not to skip. A festival alert is gold for three weeks and pure noise by
@@ -135,6 +160,12 @@ So for every `EVERGREEN - PERSON` row, before writing the query:
 3. Where the press is genuinely inconsistent, write two rows rather than one clever query.
 4. If you cannot confirm the spelling, mark the row `OPTIONAL` and say plainly in
    `What It Tracks` that the spelling is unverified. Do not quote a guess.
+
+**Correct the name; don't drop the person.** When a search turns up the published form, use it —
+`"Anita Dacosta E Gomes" "St Regis Goa"` rather than deleting the row. A marcom director, GM or
+executive chef is one of the most productive evergreen alerts there is, because appointments,
+interviews and quotes all carry the name. Dropping the row silently loses that coverage, and is
+the wrong response to a spelling you have just successfully verified.
 
 The same care applies to restaurant and campaign names taken from internal notes — the client's
 internal working title is often not the name in the release.
