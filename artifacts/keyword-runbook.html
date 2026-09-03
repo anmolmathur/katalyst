@@ -1,0 +1,345 @@
+<title>Katalyst Keyword Runbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#eff2f3; --panel:#ffffff; --panel-2:#e6ebec;
+    --ink:#111a1c; --ink-2:#3d4c50; --ink-3:#6b7c80;
+    --rule:#cfd8da; --rule-soft:#dee5e6;
+    --accent:#1a6b66; --accent-ink:#0f4a46; --accent-wash:#dceceb;
+    --gate:#9a5a12; --gate-wash:#f6e8d5;
+    --go:#256b52; --go-wash:#dbeee5;
+    --mono-bg:#12191b; --mono-ink:#dbe6e5; --mono-dim:#7e9895;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0e1416; --panel:#161e21; --panel-2:#1d272a;
+      --ink:#e7edee; --ink-2:#adbcbf; --ink-3:#7d8f92;
+      --rule:#2b383b; --rule-soft:#222d30;
+      --accent:#5fbdb5; --accent-ink:#8ed6cf; --accent-wash:#16302e;
+      --gate:#d29a4e; --gate-wash:#2e2415;
+      --go:#6cbf9a; --go-wash:#152a22;
+      --mono-bg:#070c0d; --mono-ink:#d3e2e0; --mono-dim:#6d8785;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0e1416; --panel:#161e21; --panel-2:#1d272a;
+    --ink:#e7edee; --ink-2:#adbcbf; --ink-3:#7d8f92;
+    --rule:#2b383b; --rule-soft:#222d30;
+    --accent:#5fbdb5; --accent-ink:#8ed6cf; --accent-wash:#16302e;
+    --gate:#d29a4e; --gate-wash:#2e2415;
+    --go:#6cbf9a; --go-wash:#152a22;
+    --mono-bg:#070c0d; --mono-ink:#d3e2e0; --mono-dim:#6d8785;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--ground);color:var(--ink);
+    font-family:Karla,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6;}
+  .wrap{max-width:78rem;margin:0 auto;padding:3.5rem 1.75rem 6rem;}
+
+  /* masthead */
+  .mast{border-bottom:2px solid var(--ink);padding-bottom:1.5rem;margin-bottom:.9rem;}
+  .kicker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-ink);
+    font-weight:700;margin:0 0 .7rem;}
+  h1{font-family:Newsreader,Georgia,serif;font-weight:600;font-size:clamp(2.1rem,5vw,3.1rem);
+    line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.015em;}
+  .standfirst{margin:.85rem 0 0;font-size:1.06rem;color:var(--ink-2);max-width:56ch;}
+  .meta{display:flex;flex-wrap:wrap;gap:1.5rem;font-size:.78rem;color:var(--ink-3);
+    margin-bottom:3rem;font-family:"IBM Plex Mono",ui-monospace,monospace;}
+
+  /* layout */
+  .cols{display:grid;grid-template-columns:minmax(0,1fr);gap:2.5rem;}
+  @media(min-width:960px){.cols{grid-template-columns:15rem minmax(0,1fr);gap:3.5rem;align-items:start;}}
+  nav{font-size:.86rem;}
+  @media(min-width:960px){nav{position:sticky;top:1.5rem;}}
+  nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.1rem;}
+  nav a{display:grid;grid-template-columns:1.85rem 1fr;gap:.4rem;padding:.42rem .5rem;
+    color:var(--ink-2);text-decoration:none;border-radius:3px;border-left:2px solid transparent;}
+  nav a:hover{background:var(--panel);color:var(--ink);border-left-color:var(--accent);}
+  nav a:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  nav .n{font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);padding-top:.12rem;}
+  nav .gate-n{color:var(--gate);font-weight:500;}
+
+  main>section{padding-top:.5rem;margin-bottom:3.4rem;}
+  main>section+section{border-top:1px solid var(--rule-soft);padding-top:2.6rem;}
+  h2{font-family:Newsreader,Georgia,serif;font-weight:600;font-size:1.62rem;line-height:1.2;
+    margin:0 0 .2rem;letter-spacing:-.01em;text-wrap:balance;}
+  .phase-n{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-3);margin:0 0 .55rem;}
+  .owner{color:var(--accent-ink);}
+  p{margin:0 0 1rem;max-width:66ch;}
+  main li{max-width:64ch;}
+  ol.steps{padding-left:1.15rem;margin:1.1rem 0;display:flex;flex-direction:column;gap:.6rem;}
+  ul.plain{padding-left:1.15rem;margin:1rem 0;display:flex;flex-direction:column;gap:.45rem;}
+  strong{font-weight:700;}
+  code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.86em;
+    background:var(--panel-2);padding:.12em .38em;border-radius:3px;}
+  a{color:var(--accent-ink);}
+
+  /* gate */
+  .gate{background:var(--gate-wash);border-left:3px solid var(--gate);
+    padding:1.15rem 1.3rem;margin:0 0 1.4rem;max-width:66ch;}
+  .gate p{margin:0;}
+  .gate p+p{margin-top:.7rem;}
+  .gate .lbl{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--gate);font-weight:500;display:block;margin-bottom:.4rem;}
+
+  /* paste block */
+  .paste{margin:1.3rem 0 1.5rem;}
+  .paste-lbl{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+    font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-3);margin-bottom:.4rem;}
+  .paste-lbl b{color:var(--accent-ink);font-weight:500;}
+  pre{margin:0;background:var(--mono-bg);color:var(--mono-ink);padding:1.1rem 1.25rem;
+    border-radius:4px;overflow-x:auto;font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:.83rem;line-height:1.62;white-space:pre-wrap;word-break:break-word;}
+  pre .c{color:var(--mono-dim);}
+
+  /* table */
+  .tbl-wrap{overflow-x:auto;margin:1.2rem 0 1.4rem;border:1px solid var(--rule);border-radius:4px;}
+  table{border-collapse:collapse;width:100%;font-size:.85rem;background:var(--panel);}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--rule-soft);vertical-align:top;}
+  th{font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-3);font-weight:500;background:var(--panel-2);white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  td code{background:transparent;padding:0;color:var(--accent-ink);}
+
+  /* checks */
+  .checks{display:grid;gap:.55rem;margin:1.2rem 0 1.4rem;}
+  .check{display:grid;grid-template-columns:1.4rem 1fr;gap:.6rem;background:var(--panel);
+    border:1px solid var(--rule-soft);border-radius:4px;padding:.75rem .9rem;max-width:64ch;}
+  .check .tick{color:var(--go);font-weight:700;font-size:.9rem;line-height:1.5;}
+  .check b{display:block;font-weight:700;}
+  .check span.d{color:var(--ink-2);font-size:.92rem;}
+
+  .note{border-top:1px solid var(--rule);padding-top:.9rem;margin-top:1.4rem;
+    font-size:.92rem;color:var(--ink-2);max-width:64ch;}
+  .note b{color:var(--ink);}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <p class="kicker">Katalyst · Nikhila's Claude</p>
+    <h1>Running the keyword sheet</h1>
+    <p class="standfirst">Eight steps to get <code>alert-keyword-research</code> producing a live
+      keyword sheet in Nikhila's account, and the coverage tracker reading from it.</p>
+  </header>
+  <p class="meta"><span>2 Sept 2026</span><span>Claude Pro</span><span>~90 min, mostly waiting</span></p>
+
+  <div class="cols">
+    <nav aria-label="Steps">
+      <ol>
+        <li><a href="#gate"><span class="n gate-n">00</span><span>Fix alert delivery</span></a></li>
+        <li><a href="#tab"><span class="n">01</span><span>Add the KEYWORDS tab</span></a></li>
+        <li><a href="#verify"><span class="n">02</span><span>Check her connectors</span></a></li>
+        <li><a href="#first"><span class="n">03</span><span>First run — three clients</span></a></li>
+        <li><a href="#judge"><span class="n">04</span><span>Judge the output</span></a></li>
+        <li><a href="#rest"><span class="n">05</span><span>Run the rest</span></a></li>
+        <li><a href="#paste"><span class="n">06</span><span>Paste it in</span></a></li>
+        <li><a href="#alerts"><span class="n">07</span><span>Add the alerts</span></a></li>
+        <li><a href="#loop"><span class="n">08</span><span>Close the loop</span></a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="gate">
+        <p class="phase-n">Step 00 · <span class="owner">you, in her Google account</span></p>
+        <h2>Fix alert delivery before anything else</h2>
+
+        <div class="gate">
+          <span class="lbl">Blocking</span>
+          <p>No mail from <code>googlealerts-noreply@google.com</code> has <em>ever</em> arrived in
+            that inbox, though thirty alerts demonstrably exist. Producing a hundred and fifty more
+            queries before that is understood just multiplies a channel that delivers nothing.</p>
+          <p>This also decides whether the keyword sheet is worth much. Alerts are the only channel
+            that reaches Vogue India, GQ India, AD and Condé Nast Traveller — the trade feeds don't
+            carry them and the search index here barely indexes them.</p>
+        </div>
+
+        <p>Work through these in order and stop as soon as one explains it.</p>
+        <ol class="steps">
+          <li>In her Gmail, search <code>in:anywhere from:googlealerts-noreply@google.com</code>.
+            The tracker only sees the normal inbox — this catches mail sitting in Spam, in All Mail,
+            or auto-archived.</li>
+          <li>Gmail → Settings → <strong>Filters and blocked addresses</strong>. A filter that skips
+            the inbox or applies a label would hide every alert without deleting one.</li>
+          <li><a href="https://www.google.com/alerts">google.com/alerts</a>, signed in as her. Click
+            the pencil on any one alert and open <strong>Show options</strong>. Check
+            <strong>Deliver to</strong> — if it reads <em>RSS feed</em> rather than her email
+            address, that is the whole answer. Alerts set to RSS send no mail at all, and we can't
+            read those feeds either: <code>google.com/alerts/feeds/…</code> is robots-blocked.</li>
+          <li>Confirm the address it delivers to is the same mailbox the tracker reads.</li>
+        </ol>
+
+        <p>While you have one alert open, set it the way they should all be:</p>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Setting</th><th>Value</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td>How often</td><td>At most once a day</td><td>Digest, not a drip</td></tr>
+              <tr><td>Sources</td><td>Automatic</td><td><code>News</code> alone drops trade blogs</td></tr>
+              <tr><td>Language</td><td>English</td><td></td></tr>
+              <tr><td>Region</td><td>India</td><td>Any Region for international names</td></tr>
+              <tr><td>How many</td><td><b>All results</b></td><td>"Only the best" silently discards trade coverage</td></tr>
+              <tr><td>Deliver to</td><td>Her email address</td><td>Never RSS</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="note">Fix <b>one</b> alert, then wait for it to fire and confirm mail lands. Don't
+          bulk-correct thirty on a theory — if the theory is wrong you've made thirty changes and
+          learned nothing.</p>
+      </section>
+
+      <section id="tab">
+        <p class="phase-n">Step 01 · <span class="owner">you, in the workbook</span></p>
+        <h2>Add the KEYWORDS tab</h2>
+        <p>In <code>Katalyst_PR_Coverage_WORKING</code>, add a tab named exactly
+          <code>KEYWORDS</code> and put these eight headers in row 1. Nothing else — the skill fills
+          the rest.</p>
+        <div class="paste">
+          <div class="paste-lbl"><span>Row 1, cells A–H</span><b>paste into the sheet</b></div>
+          <pre>Client	Property / Brand	Google Alert Search Term	Keyword Type	What It Tracks	Source	Priority	Expires</pre>
+        </div>
+        <p>The tracker falls back to the <code>CLIENTS</code> column if this tab is missing, so
+          nothing breaks by doing it later — but creating it now means there's somewhere to paste
+          when the output arrives.</p>
+      </section>
+
+      <section id="verify">
+        <p class="phase-n">Step 02 · <span class="owner">you, in her Claude</span></p>
+        <h2>Check her connectors before you spend a long run</h2>
+        <p>The skill reads Gmail for press releases and Drive for the workbook. Both worked in her
+          account during the coverage runs, but confirm rather than assume — a connector prompt
+          halfway through a forty-minute run wastes the run.</p>
+        <div class="paste">
+          <div class="paste-lbl"><span>New chat in her Katalyst project</span><b>paste into her Claude</b></div>
+          <pre>Two quick checks before we start a longer task.
+
+1. Search my Gmail for anything from Pooja in the last 30 days and tell me
+   how many threads you can see. Don't open them.
+2. Open the CLIENTS tab of Katalyst_PR_Coverage_WORKING and tell me how many
+   client rows it holds, and whether a KEYWORDS tab exists yet.
+
+Just the two answers.</pre>
+        </div>
+        <p>You want a real number for each. "I don't have access to Gmail" here saves you an hour.</p>
+      </section>
+
+      <section id="first">
+        <p class="phase-n">Step 03 · <span class="owner">you, in her Claude</span></p>
+        <h2>First run — three clients, not thirty</h2>
+        <p>Scope the first run deliberately. She's on Pro, this reads a lot of mail, and every
+          formatting problem we've hit on this project only became visible in the output. Three
+          clients tells you the shape for a fraction of the budget.</p>
+        <p>These three are chosen because each stresses something different: Raga is a live
+          campaign with heavy press, St. Regis Goa has a residency running 4–6 September with a
+          visiting chef, and Serious Slice is a small independent whose name is two common words.</p>
+        <div class="paste">
+          <div class="paste-lbl"><span>Same chat</span><b>paste into her Claude</b></div>
+          <pre>Use the alert-keyword-research skill.
+
+Scope this first run to three clients only: RAGA by Gaggan Anand,
+The St. Regis Goa Resort, and Serious Slice. I want to check the output
+format before we commit to the full roster.
+
+Give me all three parts — the keyword sheet as an HTML table, the counts,
+and the GOOGLE ALERTS TO ADD NOW block.</pre>
+        </div>
+      </section>
+
+      <section id="judge">
+        <p class="phase-n">Step 04 · <span class="owner">you, reading the output</span></p>
+        <h2>Five things to check before you trust it</h2>
+        <p>This is the step that decides whether the rest is worth doing. Read the campaign rows
+          first — they're the point of the whole exercise.</p>
+        <div class="checks">
+          <div class="check"><span class="tick">✓</span><span><b>Campaign keywords name the story, not the brand</b>
+            <span class="d">If St. Regis Goa's campaign row is just <code>"St Regis Goa"</code> again,
+            the skill skimmed subject lines instead of opening releases. You want something like
+            <code>"Jacopo Avigo" "Oliveto"</code>.</span></span></div>
+          <div class="check"><span class="tick">✓</span><span><b>Every campaign row has an Expires date</b>
+            <span class="d">Blank means it will still be searched at Christmas. Evergreen rows should
+            be blank; campaign rows must not be.</span></span></div>
+          <div class="check"><span class="tick">✓</span><span><b>Generic words are qualified</b>
+            <span class="d">Serious Slice is the test. A bare <code>"Serious Slice"</code> is fine
+            quoted; an unquoted <code>Serious Slice</code> is not, and anything like <code>Slice</code>
+            alone is a fail.</span></span></div>
+          <div class="check"><span class="tick">✓</span><span><b>The ADD NOW block is bare lines</b>
+            <span class="d">One query per line, no numbering, no priority labels, no commentary. It
+            has to survive being copied straight into Google Alerts.</span></span></div>
+          <div class="check"><span class="tick">✓</span><span><b>No release text leaked into the sheet</b>
+            <span class="d">Names and campaign titles are published anyway and belong there. Body
+            copy, embargo dates and client contact details do not.</span></span></div>
+        </div>
+        <p>If the campaign rows are weak, say so plainly and ask it to reopen the releases rather
+          than accepting them — that's the one thing this skill exists to get right.</p>
+      </section>
+
+      <section id="rest">
+        <p class="phase-n">Step 05 · <span class="owner">you, in her Claude</span></p>
+        <h2>Run the rest of the roster</h2>
+        <div class="paste">
+          <div class="paste-lbl"><span>Same chat, once step 04 passes</span><b>paste into her Claude</b></div>
+          <pre>Good — that format works. Now run the alert-keyword-research skill over the
+rest of the CLIENTS tab: everything except RAGA by Gaggan Anand, The St.
+Regis Goa Resort and Serious Slice.
+
+If you start running short, stop at a clean client boundary and tell me
+which clients are left, rather than truncating a client's rows.</pre>
+        </div>
+        <p class="note"><b>On Pro this may want two sittings.</b> That last instruction is what makes
+          that safe — a run that stops between clients is resumable, a run that stops mid-client
+          leaves you unsure what was covered.</p>
+      </section>
+
+      <section id="paste">
+        <p class="phase-n">Step 06 · <span class="owner">you, in the workbook</span></p>
+        <h2>Paste the sheet in</h2>
+        <p>Select the HTML table in her Claude's reply, copy, click <code>KEYWORDS!A2</code>, paste.
+          It arrives as real cells because it's an HTML table — this is why the skill doesn't emit
+          tab-separated text, which collapses into one column.</p>
+        <p>Then sort by <code>Client</code>, and freeze row 1. Nothing else is needed: the tracker
+          reads the columns by name.</p>
+      </section>
+
+      <section id="alerts">
+        <p class="phase-n">Step 07 · <span class="owner">you and Nikhila, together</span></p>
+        <h2>Add the alerts by hand, ESSENTIAL first</h2>
+        <p>The skill deliberately doesn't do this. There's no Google Alerts API, so automating it
+          means clicking a hundred and fifty pieces of standing configuration into her Google
+          account with nobody watching for a query that went in wrong. That costs more to unpick
+          than it saves.</p>
+        <p>Work from the <strong>GOOGLE ALERTS TO ADD NOW</strong> block. Add the ESSENTIAL queries
+          only, in batches of about twenty, checking after the first three that Google accepted the
+          quotation marks intact.</p>
+        <div class="gate">
+          <span class="lbl">Quotation marks are load-bearing</span>
+          <p>Unquoted words in a Google Alert are ANDed together. Several of the roster's existing
+            alerts had their quotation marks flattened at some point and now match almost nothing.
+            If a query goes in as <code>Mezzo Festival Goa</code> instead of
+            <code>"Mezzo Festival" Goa</code>, it is not the same alert.</p>
+        </div>
+        <p>If Nikhila would rather I drove the browser for this, that's a separate watched session
+          with her present — worth doing once the list is agreed, not in a scheduled task.</p>
+      </section>
+
+      <section id="loop">
+        <p class="phase-n">Step 08 · <span class="owner">the tracker, on its own</span></p>
+        <h2>Close the loop</h2>
+        <p>Nothing more to configure. The next daily run reads <code>KEYWORDS</code> automatically:
+          unexpired campaign rows get searched first for the clients that have them, evergreen rows
+          override the static <code>CLIENTS</code> query, and expired rows are skipped.</p>
+        <p>You'll know it worked when the coverage email starts naming campaign terms in its
+          coverage note rather than just client names — and, more to the point, when a piece turns
+          up that nobody would have found by searching the brand.</p>
+        <p class="note"><b>Cadence.</b> Re-run the keyword skill weekly, or whenever a batch of
+          releases goes out. Each run also produces a <b>RETIRE THESE</b> list of expired campaign
+          queries — deleting those from Google Alerts is what stops the inbox filling with festivals
+          that ended in September. An alert list nobody prunes is how the last setup died.</p>
+      </section>
+    </main>
+  </div>
+</div>
