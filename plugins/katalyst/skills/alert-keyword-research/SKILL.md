@@ -161,6 +161,13 @@ So for every `EVERGREEN - PERSON` row, before writing the query:
 4. If you cannot confirm the spelling, mark the row `OPTIONAL` and say plainly in
    `What It Tracks` that the spelling is unverified. Do not quote a guess.
 
+**Mine the source you already opened.** When one name checks out in a piece, read the rest of
+that piece before marking anyone else unverified — trade coverage of a launch usually names the
+whole founding team, the chef and the parent company in the same three paragraphs. A run
+verified one Serious Slice co-founder against a Business of Food article and marked the other
+two `OPTIONAL` as unverified; all three were named, correctly spelled, in that same article.
+One extra read promotes two rows.
+
 **Correct the name; don't drop the person.** When a search turns up the published form, use it —
 `"Anita Dacosta E Gomes" "St Regis Goa"` rather than deleting the row. A marcom director, GM or
 executive chef is one of the most productive evergreen alerts there is, because appointments,
