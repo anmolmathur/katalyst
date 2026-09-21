@@ -1,7 +1,7 @@
 {
   "name": "katalyst",
   "displayName": "Katalyst",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "House skills for Katalyst Reputation Management — brand voice, PR coverage tracking, monthly social plans and client reports.",
   "author": { "name": "Katalyst Reputation Management", "url": "https://katalystrm.com" },
   "keywords": ["pr", "hospitality", "social-media", "reporting"]

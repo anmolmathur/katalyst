@@ -1,0 +1,913 @@
+<title>Katalyst Client Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* Palette and type are the Coverage Desk's, deliberately — the two pages are one desk.
+   Brass is chrome only. Magnitude is one hue, length carries value. Status is always
+   dot + WORD, never colour alone. */
+:root{
+  --plane:#f2f4f7; --surface:#fdfdfe; --surface-2:#f7f9fb; --surface-3:#eef2f6;
+  --ink:#141922; --ink-2:#55606f; --ink-3:#7e8998;
+  --rule:#e2e6ec; --rule-2:#eef1f5;
+  --brass:#8d7134; --brass-soft:#f0e7d4;
+  --mag:#2a78d6;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --good-bg:#e7f5e7; --warn-bg:#fdf3dd; --crit-bg:#fbe8e8;
+  --shadow:0 1px 2px rgba(20,25,34,.05), 0 8px 24px -16px rgba(20,25,34,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --plane:#0c0f14; --surface:#161a21; --surface-2:#1b2029; --surface-3:#212734;
+    --ink:#eef1f5; --ink-2:#9aa4b3; --ink-3:#727d8c;
+    --rule:#252b35; --rule-2:#1e232c;
+    --brass:#c9a961; --brass-soft:#2a2418;
+    --mag:#3987e5;
+    --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+    --good-bg:#12240f; --warn-bg:#2b2211; --crit-bg:#2c1416;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --plane:#0c0f14; --surface:#161a21; --surface-2:#1b2029; --surface-3:#212734;
+  --ink:#eef1f5; --ink-2:#9aa4b3; --ink-3:#727d8c;
+  --rule:#252b35; --rule-2:#1e232c;
+  --brass:#c9a961; --brass-soft:#2a2418;
+  --mag:#3987e5;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --good-bg:#12240f; --warn-bg:#2b2211; --crit-bg:#2c1416;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--plane); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:34px 22px 90px}
+
+.mast{border-bottom:2px solid var(--ink); padding-bottom:14px;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap}
+.mast h1{font-family:Newsreader,Georgia,serif; font-weight:500; font-size:clamp(30px,4.4vw,44px);
+  margin:0; letter-spacing:-.015em; text-wrap:balance; line-height:1.05}
+.mast .sub{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--brass);
+  font-weight:600; margin-bottom:7px}
+.stamp{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3); text-align:right; line-height:1.7}
+.rule-thin{height:1px; background:var(--rule); margin:0 0 24px}
+
+/* roster rail — the whole book of business, worst first, one click to open */
+.rail{margin-bottom:24px}
+.rail-head{display:flex; align-items:baseline; justify-content:space-between; gap:14px;
+  flex-wrap:wrap; margin-bottom:11px}
+.rail-head h2{font-family:Newsreader,Georgia,serif; font-weight:600; font-size:17px; margin:0}
+.filters{display:flex; gap:6px; flex-wrap:wrap}
+.filt{font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; font-weight:600;
+  padding:5px 11px; border:1px solid var(--rule); background:var(--surface); color:var(--ink-3);
+  border-radius:2px; cursor:pointer}
+.filt[aria-pressed="true"]{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+.filt:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+.roster{display:grid; grid-template-columns:repeat(auto-fill,minmax(206px,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.rcard{background:var(--surface); border:none; text-align:left; padding:10px 12px; cursor:pointer;
+  display:grid; grid-template-columns:9px 1fr auto; gap:9px; align-items:center; font:inherit; color:var(--ink)}
+.rcard:hover{background:var(--surface-2)}
+.rcard[aria-current="true"]{background:var(--surface-3); box-shadow:inset 2px 0 0 var(--brass)}
+.rcard:focus-visible{outline:2px solid var(--brass); outline-offset:-2px}
+.rcard .dot{width:9px; height:9px; border-radius:50%}
+.rcard .nm{font-size:13px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.rcard .ct{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-3);
+  font-variant-numeric:tabular-nums}
+.d-crit{background:var(--crit)} .d-warn{background:var(--warn)} .d-good{background:var(--good)}
+
+.panel{background:var(--surface); border:1px solid var(--rule); border-radius:3px;
+  padding:22px 24px; margin-bottom:20px; box-shadow:var(--shadow)}
+.phead{display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+  margin:0 0 4px; flex-wrap:wrap}
+.phead h2{font-family:Newsreader,Georgia,serif; font-weight:600; font-size:20px; margin:0; letter-spacing:-.01em}
+.phead .n{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3); font-variant-numeric:tabular-nums}
+.lede{color:var(--ink-2); font-size:13.5px; margin:0 0 18px; max-width:66ch}
+
+/* client header — no card chrome, it is the page's subject line */
+.chead{border-bottom:1px solid var(--rule); padding-bottom:18px; margin-bottom:22px}
+.chead h2{font-family:Newsreader,Georgia,serif; font-weight:500; font-size:clamp(24px,3.6vw,33px);
+  margin:0 0 6px; letter-spacing:-.015em; line-height:1.1}
+.cmeta{display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-size:12.5px; color:var(--ink-2)}
+.tag{font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; color:var(--brass)}
+.people{font-size:13px; color:var(--ink-2); margin:12px 0 0; max-width:70ch}
+
+/* the work order */
+.order{display:grid; gap:0; counter-reset:act}
+.act{display:grid; grid-template-columns:30px 1fr; gap:14px; padding:16px 0;
+  border-bottom:1px solid var(--rule-2)}
+.act:last-child{border-bottom:none}
+.act .idx{font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-3);
+  font-variant-numeric:tabular-nums; padding-top:3px}
+.act h3{font-size:15.5px; font-weight:600; margin:0 0 5px; line-height:1.35}
+.act .why{font-size:13.5px; color:var(--ink-2); margin:0 0 10px; max-width:64ch}
+.act .do{font-size:13.5px; margin:0; color:var(--ink)}
+.act .do b{font-weight:600}
+.sevline{display:flex; align-items:center; gap:9px; margin-bottom:7px; flex-wrap:wrap}
+.q{font-family:"IBM Plex Mono",monospace; font-size:12px; background:var(--surface-2);
+  border:1px solid var(--rule); border-radius:2px; padding:8px 10px; margin:9px 0 0;
+  overflow-x:auto; white-space:pre; color:var(--ink-2)}
+.clear{padding:34px 6px; display:grid; gap:8px; justify-items:start}
+.clear h3{font-family:Newsreader,Georgia,serif; font-size:20px; margin:0; font-weight:600}
+.clear p{margin:0; color:var(--ink-2); font-size:14px; max-width:56ch}
+
+.pill{display:inline-flex; align-items:center; gap:6px; padding:3px 9px 3px 7px; border-radius:2px;
+  font-size:11.5px; font-weight:600; letter-spacing:.03em; white-space:nowrap}
+.pill .dot{width:7px; height:7px; border-radius:50%; flex:none}
+.p-crit{background:var(--crit-bg); color:var(--ink)} .p-crit .dot{background:var(--crit)}
+.p-warn{background:var(--warn-bg); color:var(--ink)} .p-warn .dot{background:var(--warn)}
+.p-good{background:var(--good-bg); color:var(--ink)} .p-good .dot{background:var(--good)}
+
+.strip{display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.stat{background:var(--surface); padding:14px 16px}
+.stat .v{font-family:"IBM Plex Mono",monospace; font-size:25px; font-weight:600; letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums; line-height:1.1}
+.stat .v small{font-size:14px; color:var(--ink-3); font-weight:400}
+.stat .k{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-top:5px}
+
+.scroll{overflow-x:auto; margin:0 -4px}
+table{border-collapse:collapse; width:100%; font-size:13.5px}
+th{text-align:left; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:600; padding:0 12px 9px; border-bottom:1px solid var(--rule); white-space:nowrap}
+td{padding:10px 12px; border-bottom:1px solid var(--rule-2); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+.num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap}
+.mono{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+
+.feed{display:grid; gap:0}
+.item{display:grid; grid-template-columns:88px 1fr; gap:16px; padding:13px 0; border-bottom:1px solid var(--rule-2)}
+.item:last-child{border-bottom:none}
+.item .d{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3); padding-top:1px}
+.item .t{font-size:14px; margin:0 0 3px; line-height:1.4}
+.item .m{font-size:12px; color:var(--ink-3)}
+.item a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item a:hover{border-bottom-color:var(--brass)}
+
+.note{background:var(--brass-soft); border-left:2px solid var(--brass); padding:13px 16px;
+  font-size:13.5px; color:var(--ink); border-radius:0 2px 2px 0; margin-top:16px}
+.note b{font-weight:600}
+.state{padding:44px 24px; text-align:center; color:var(--ink-2); font-size:14px}
+.state h3{font-family:Newsreader,Georgia,serif; font-size:19px; margin:0 0 8px; color:var(--ink); font-weight:600}
+.state p{max-width:48ch; margin:0 auto}
+.skel{height:12px; background:var(--rule-2); border-radius:2px; animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+button{font:inherit}
+.btn{font-size:12px; font-weight:500; padding:5px 11px; cursor:pointer; color:var(--ink);
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:2px}
+.btn:hover{border-color:var(--brass)}
+.btn:focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+.btn-solid{background:var(--ink); color:var(--surface); border-color:var(--ink);
+  font-size:13.5px; padding:10px 18px}
+.btn-solid:hover{opacity:.87; border-color:var(--ink)}
+.btn-solid:disabled{opacity:.45; cursor:default}
+.ask-row{display:flex; gap:9px; margin-top:4px; flex-wrap:wrap}
+.ask-row input{flex:1 1 260px; font:inherit; font-size:14px; padding:10px 13px; color:var(--ink);
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:2px}
+.ask-row input:focus{outline:2px solid var(--brass); outline-offset:1px}
+.chips{display:flex; gap:7px; flex-wrap:wrap; margin-top:11px}
+.chip{font-size:12px; padding:5px 11px; background:var(--surface-2); border:1px solid var(--rule);
+  border-radius:2px; cursor:pointer; color:var(--ink-2)}
+.chip:hover{border-color:var(--brass); color:var(--ink)}
+.answer{margin-top:15px; padding:15px 17px; background:var(--surface-2); border:1px solid var(--rule);
+  border-radius:2px; font-size:14px; white-space:pre-wrap; line-height:1.6}
+.foot{font-size:11.5px; color:var(--ink-3); text-align:center; margin-top:34px; line-height:1.7}
+</style>
+
+<div class="wrap">
+  <div class="mast">
+    <div>
+      <div class="sub">Katalyst Reputation Management</div>
+      <h1>Client Desk</h1>
+    </div>
+    <div class="stamp" id="stamp">finding the workbook…</div>
+  </div>
+  <div class="rule-thin"></div>
+
+  <div id="app">
+    <div class="panel"><div class="state">
+      <div class="skel" style="width:180px;margin:0 auto 14px"></div>
+      <div class="skel" style="width:320px;margin:0 auto"></div>
+    </div></div>
+  </div>
+
+  <div class="foot">
+    Reads the live coverage workbook through your own Google Drive connection.<br>
+    Nothing is stored in this page.
+  </div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   Katalyst Client Desk
+   One page, every client. Answers "what do I have to do about this
+   client today", not "how are we doing".
+
+   Finds the workbook by NAME rather than by file id, so the same page
+   works unchanged when it is republished from Nikhila's account — her
+   copy has a different id. FALLBACK_FILE_ID is only used if the search
+   comes back empty.
+------------------------------------------------------------------ */
+const WORKBOOK_TITLE  = "Katalyst_PR_Coverage_WORKING";
+const SEARCH_FRAGMENT = "Katalyst_PR_Coverage";
+const FALLBACK_FILE_ID = "";
+
+const app   = document.getElementById("app");
+const stamp = document.getElementById("stamp");
+
+const GROUPS = ["Hotels","Kalra","Dugar","Udeshi","Independent"];
+let DATA = null;            // parsed workbook
+let SEL  = null;            // selected client name
+let FILTER = "All";
+
+/* ---------- small helpers ---------- */
+const esc = s => String(s??"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const DAY = 864e5;
+const today = new Date();
+const ymNow = today.toISOString().slice(0,7);
+function addMonths(ym, n){
+  const [y,m] = ym.split("-").map(Number);
+  const d = new Date(Date.UTC(y, m-1+n, 1));
+  return d.toISOString().slice(0,7);
+}
+const MONTHS = ["January","February","March","April","May","June",
+                "July","August","September","October","November","December"];
+function monthName(ym){
+  const [y,m] = String(ym||"").split("-");
+  return MONTHS[Number(m)-1] ? MONTHS[Number(m)-1] + " " + y : (ym||"—");
+}
+/* A row dated 2026-07 with no day still has to sort and age; treat it as mid-month. */
+function stamp10(d){ return d && d.length === 7 ? d + "-15" : d; }
+function daysSince(d){
+  const t = Date.parse(stamp10(d));
+  return isNaN(t) ? null : Math.floor((today - t)/DAY);
+}
+/* "Rs. 5,500" and "₹ 3,50,000" are both money; "N/A — no rate found" is not.
+   Take the first run of digits, not every digit in the string — the full stop in
+   "Rs." would otherwise turn 5,500 into 0.55. */
+function mavValue(v){
+  const s = String(v||"");
+  if(!/[₹]|rs\.?\s*[\d]/i.test(s)) return 0;
+  const m = s.match(/\d[\d,]*(\.\d+)?/);
+  if(!m) return 0;
+  const n = Number(m[0].replace(/,/g,""));
+  return isNaN(n) ? 0 : n;
+}
+function mavMethod(v){
+  const s = String(v||"").trim();
+  if(!s || /^n\/a/i.test(s)) return "none";
+  if(s.includes("₹")) return "rate card";
+  if(/rs\.?\s*[\d,]/i.test(s)) return "CPM estimate";
+  return "none";
+}
+function normLink(u){
+  let s = String(u||"").trim();
+  if(!/^https?:/i.test(s)) return "";
+  try{
+    const m = s.match(/[?&]url=([^&]+)/);            // unwrap google.com/url wrappers
+    if(m) s = decodeURIComponent(m[1]);
+  }catch(e){}
+  return s.split("?")[0].replace(/\/amp\/?$/,"").replace(/\/+$/,"").toLowerCase();
+}
+function copyText(text, btn){
+  const done = () => { const o = btn.textContent; btn.textContent = "Copied"; setTimeout(()=>btn.textContent=o, 1600); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, () => fallback());
+  } else fallback();
+  function fallback(){
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly","");
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); done(); }
+    catch(e){ btn.textContent = "Select and copy"; }
+    ta.remove();
+  }
+}
+
+/* ---------- parse the connector's markdown-table rendering ---------- */
+function unesc(s){ return String(s).replace(/\\([_&>!~*\[\]])/g,"$1").trim(); }
+function cells(line){ return line.replace(/^\||\|$/g,"").split("|").map(unesc); }
+
+function parseTables(md){
+  const lines = String(md).split("\n");
+  const out = [];
+  for(let i=0;i<lines.length;i++){
+    if(!/^\|\s*:-:/.test(lines[i])) continue;
+    const header = lines[i+1];
+    if(!header || !header.startsWith("|")) continue;
+    const cols = cells(header);
+    const rows = [];
+    for(let j=i+2;j<lines.length;j++){
+      if(!lines[j].startsWith("|")) break;
+      if(/^\|\s*:-:/.test(lines[j])) break;
+      rows.push(cells(lines[j]));
+    }
+    out.push({cols, rows});
+    i += rows.length + 1;
+  }
+  return out;
+}
+/* Locate tabs by the headers they carry, so a renamed tab or a reordered
+   column does not break the page. */
+function pickTable(tables, ...need){
+  return tables.find(t => need.every(n => t.cols.some(c => c.toLowerCase().includes(n))));
+}
+function toObjects(t){
+  if(!t) return [];
+  return t.rows.map(r => {
+    const o = {};
+    t.cols.forEach((c,i) => o[c] = (r[i] ?? "").trim());
+    return o;
+  }).filter(o => Object.values(o).some(v => v !== ""));
+}
+
+function build(md){
+  const tables = parseTables(md);
+  const get = (o,frag) => { const k = Object.keys(o).find(x=>x.toLowerCase().includes(frag)); return k?o[k]:""; };
+
+  const coverage = toObjects(pickTable(tables,"date","client","publication")).map(r => ({
+    date:  get(r,"date").slice(0,10),
+    client:get(r,"client"),
+    group: get(r,"group"),
+    pub:   get(r,"publication"),
+    tier:  get(r,"tier"),
+    topic: get(r,"topic"),
+    link:  get(r,"link"),
+    place: get(r,"placement"),
+    mav:   get(r,"mav (rs") || get(r,"mav"),
+    notes: get(r,"notes"),
+    dnote: get(r,"date note")
+  })).filter(r => /^\d{4}-\d{2}/.test(r.date) && r.client);
+
+  const clients = toObjects(pickTable(tables,"client","google alerts query")).map(r => ({
+    name:  get(r,"client"),
+    group: get(r,"group"),
+    query: get(r,"google alerts query"),
+    people:get(r,"key people"),
+    setup: get(r,"setup notes"),
+    alert: get(r,"alert created"),
+    status:get(r,"status")
+  })).filter(r => r.name && r.name.toLowerCase() !== "client");
+
+  const plans = toObjects(pickTable(tables,"client","month","status")).map(r => ({
+    client:  get(r,"client"),
+    group:   get(r,"group"),
+    month:   get(r,"month").slice(0,7),
+    status:  get(r,"status"),
+    sent:    get(r,"sent on"),
+    approved:get(r,"approved on"),
+    link:    get(r,"deck link"),
+    notes:   get(r,"notes")
+  })).filter(r => r.client && /^\d{4}-\d{2}$/.test(r.month));
+
+  /* Clients that appear in coverage but not on the roster still deserve a page. */
+  const known = new Set(clients.map(c => c.name));
+  coverage.forEach(c => {
+    if(known.has(c.client)) return;
+    known.add(c.client);
+    clients.push({name:c.client, group:c.group, query:"", people:"", setup:"",
+                  alert:"", status:"", offRoster:true});
+  });
+
+  const roster = clients.map(c => {
+    const rows = coverage.filter(x => x.client === c.name)
+                         .sort((a,b) => b.date.localeCompare(a.date));
+    const last = rows[0] ? rows[0].date : null;
+    return {...c, rows, count:rows.length, last, days: last ? daysSince(last) : null,
+            plans: plans.filter(p => p.client === c.name)};
+  });
+
+  return {coverage, roster, plans, planTracked: plans.length > 0};
+}
+
+/* ---------- what needs doing, per client ---------- */
+const PLAN_DONE   = /^(approved|published|live|sent to client and approved)/i;
+const PLAN_SENT   = /^(sent|shared|with client|awaiting|for approval)/i;
+const PLAN_MOVING = /^(draft|in progress|writing|design)/i;
+const ALERT_YES   = /^(y|yes|done|✓|true|created)/i;
+
+function planFor(c, ym){ return c.plans.find(p => p.month === ym) || null; }
+
+function actionsFor(c){
+  const A = [];
+  const d = today.getDate();
+  const thisM = ymNow, nextM = addMonths(ymNow, 1);
+
+  /* --- monthly plan --- */
+  if(c.plans.length){
+    const cur = planFor(c, thisM);
+    const curStatus = cur ? cur.status : "";
+    if(!cur || !curStatus || /^not started/i.test(curStatus)){
+      A.push({sev:"crit", title:`${monthName(thisM)} plan was never filed`,
+        why:`${monthName(thisM).split(" ")[0]} is already under way and nothing is recorded against this month. Either the plan went out and the row was never updated, or the month is running unplanned.`,
+        do:`Check whether the deck exists. If it does, put the date in <b>Sent On</b> and set <b>Status</b>. If it does not, this is the first thing to build today.`});
+    } else if(PLAN_MOVING.test(curStatus)){
+      A.push({sev:"warn", title:`${monthName(thisM)} plan is still in draft`,
+        why:`The month has started and the plan has not reached the client.`,
+        do:`Finish and send it, then set <b>Status</b> to Sent for approval with today's date in <b>Sent On</b>.`});
+    } else if(PLAN_SENT.test(curStatus)){
+      const waiting = cur.sent ? daysSince(cur.sent) : null;
+      if(waiting === null || waiting >= 4){
+        A.push({sev:"warn", title:`${monthName(thisM)} plan is waiting on client approval`,
+          why: waiting === null
+            ? `Marked as sent, but with no date in Sent On there is no way to tell how long it has been sitting.`
+            : `Sent ${waiting} days ago and still not approved. Posts cannot be scheduled against an unapproved plan.`,
+          do:`Chase the approval, then fill <b>Approved On</b>.`,
+          copy:`Hi — following up on the ${monthName(thisM)} social plan for ${c.name}, sent over ${waiting===null?"recently":waiting+" days ago"}. Could you confirm approval so we can lock the calendar? Happy to walk through any changes.`,
+          copyLabel:"Copy chase note"});
+      }
+    }
+
+    const nxt = planFor(c, nextM);
+    const nxtStatus = nxt ? nxt.status : "";
+    const nxtStarted = nxt && nxtStatus && !/^not started/i.test(nxtStatus);
+    if(d >= 20 && !nxtStarted){
+      A.push({sev:"crit", title:`${monthName(nextM)} plan is due`,
+        why:`The 20th has passed. ${monthName(nextM).split(" ")[0]}'s plan needs to be with the client before the month turns, and nothing has started.`,
+        do:`Build the ${monthName(nextM).split(" ")[0]} plan, then set its <b>Status</b> on the PLANS tab.`});
+    } else if(d >= 14 && d < 20 && !nxtStarted){
+      A.push({sev:"warn", title:`${monthName(nextM)} plan opens this week`,
+        why:`The plan is normally with the client by the 20th, which is ${20-d} days away.`,
+        do:`Start the ${monthName(nextM).split(" ")[0]} deck.`});
+    }
+  }
+
+  /* --- silence --- */
+  if(c.count === 0){
+    A.push({sev:"crit", title:"No coverage has ever been logged",
+      why:`Nothing at all sits against ${esc(c.name)}. On this roster that almost always means nobody was monitoring, not that nothing was written.`,
+      do:`Run the search below by hand once. Anything it finds should be logged and the alert set up so the tracker catches it from tomorrow.`,
+      query:c.query});
+  } else if(c.days >= 60){
+    A.push({sev:"crit", title:`${c.days} days without coverage`,
+      why:`Last placement was ${esc(c.last)}. Two months of silence on a retained client is a conversation the client will start if we do not.`,
+      do:`Pitch something this week — a chef story, a seasonal menu, an appointment. ${c.people ? "Named spokespeople: " + esc(c.people) + "." : ""}`});
+  } else if(c.days >= 30){
+    A.push({sev:"warn", title:`${c.days} days without coverage`,
+      why:`Last placement was ${esc(c.last)}. A month of quiet usually means there is nothing in the pipeline to pitch.`,
+      do:`Check what is coming up at the property and get one story out.`});
+  }
+
+  /* --- monitoring --- */
+  if(!ALERT_YES.test(c.alert||"")){
+    A.push({sev: c.count === 0 ? "crit" : "warn",
+      title:"Google Alert not confirmed",
+      why:`The daily tracker reads Google Alerts first and fastest. Until this alert exists, this client is invisible to it every morning.`,
+      do:`Create the alert with the exact query below — the bare client name will not do — then tick <b>Alert Created?</b> on the CLIENTS tab.`,
+      query:c.query, copy:c.query, copyLabel:"Copy the query"});
+  }
+
+  const gaps = gapsFor(c);
+  if(gaps.total){
+    A.push({sev: gaps.total > 4 ? "warn" : "info",
+      title:`${gaps.total} logged placement${gaps.total===1?"":"s"} not ready for a report`,
+      why:`Rows missing a tier, a valuation or a link cannot go into a monthly report as they stand, and dates flagged for verification cannot be defended if the client asks.`,
+      do:`Work down the report-readiness table below before the next report goes out.`});
+  }
+
+  const order = {crit:0, warn:1, info:2};
+  return A.sort((a,b) => order[a.sev] - order[b.sev]);
+}
+
+function gapsFor(c){
+  const noTier   = c.rows.filter(r => !r.tier).length;
+  const noMav    = c.rows.filter(r => mavMethod(r.mav) === "none").length;
+  /* A print piece legitimately has no URL — read "print" from the placement type,
+     the date note or the publication name before calling a missing link a gap. */
+  const noLink   = c.rows.filter(r => !/^https?:/i.test(r.link)
+                     && !/print/i.test([r.place, r.dnote, r.pub, r.link].join(" "))).length;
+  const verify   = c.rows.filter(r => /verify|tbd/i.test(r.dnote||"")).length;
+  const methods  = new Set(c.rows.map(r => mavMethod(r.mav)).filter(m => m !== "none"));
+  const seen = {}, dupes = [];
+  c.rows.forEach(r => {
+    const k = normLink(r.link) || (r.client+"|"+r.date+"|"+(r.pub||"").toLowerCase());
+    if(seen[k]) dupes.push(r); else seen[k] = true;
+  });
+  return {noTier, noMav, noLink, verify, mixed: methods.size > 1, dupes: dupes.length,
+          total: noTier + noMav + noLink + verify};
+}
+
+/* Memoised — the roster sort asks for this repeatedly and it is pure for a given read. */
+let SEV_CACHE = {};
+function worstSev(c){
+  if(SEV_CACHE[c.name]) return SEV_CACHE[c.name];
+  const a = actionsFor(c);
+  const s = a.some(x => x.sev === "crit") ? "crit"
+          : a.some(x => x.sev === "warn") ? "warn" : "good";
+  return (SEV_CACHE[c.name] = s);
+}
+
+/* ---------- render ---------- */
+function renderAll(){
+  const {roster} = DATA;
+  if(!SEL || !roster.some(r => r.name === SEL)) SEL = pickDefault();
+  app.innerHTML = railHTML() + clientHTML(roster.find(r => r.name === SEL));
+  wireRail(); wireCopy(); wireAsk();
+  const t = new Date();
+  stamp.innerHTML = `${roster.length} clients · ${DATA.coverage.length} placements<br>read ${
+    t.toLocaleString(undefined,{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}`;
+}
+
+function pickDefault(){
+  let saved = null;
+  try{ saved = localStorage.getItem("katalyst-client"); }catch(e){}
+  if(saved && DATA.roster.some(r => r.name === saved)) return saved;
+  const ranked = DATA.roster.slice().sort(rankRoster);
+  return ranked.length ? ranked[0].name : null;
+}
+const SEV_ORDER = {crit:0, warn:1, good:2};
+function rankRoster(a,b){
+  return SEV_ORDER[worstSev(a)] - SEV_ORDER[worstSev(b)]
+      || (b.days ?? 1e9) - (a.days ?? 1e9)
+      || a.name.localeCompare(b.name);
+}
+
+function railHTML(){
+  const list = DATA.roster
+    .filter(r => FILTER === "All" || (r.group || "Unassigned") === FILTER)
+    .sort(rankRoster);
+  const counts = {crit:0, warn:0};
+  DATA.roster.forEach(r => { const s = worstSev(r); if(counts[s] !== undefined) counts[s]++; });
+
+  return `<div class="rail">
+    <div class="rail-head">
+      <h2>${counts.crit} client${counts.crit===1?"":"s"} need${counts.crit===1?"s":""} something today${
+        counts.warn ? `, ${counts.warn} soon` : ""}</h2>
+      <div class="filters">${["All",...GROUPS].map(g =>
+        `<button class="filt" data-g="${esc(g)}" aria-pressed="${FILTER===g}">${esc(g)}</button>`).join("")}</div>
+    </div>
+    <div class="roster">${list.map(r => {
+      const s = worstSev(r);
+      return `<button class="rcard" data-c="${esc(r.name)}" aria-current="${r.name===SEL}">
+        <span class="dot d-${s}"></span>
+        <span class="nm" title="${esc(r.name)}">${esc(r.name)}</span>
+        <span class="ct">${r.days === null ? "never" : r.days + "d"}</span>
+      </button>`;}).join("") || `<div class="stat" style="grid-column:1/-1;color:var(--ink-3)">No clients in this group.</div>`}
+    </div>
+  </div>`;
+}
+
+function clientHTML(c){
+  if(!c) return `<div class="panel"><div class="state"><h3>No clients found</h3>
+    <p>The CLIENTS tab came back empty. Check that it is still in the workbook.</p></div></div>`;
+
+  const acts = actionsFor(c);
+  const gaps = gapsFor(c);
+  const thisM = ymNow, lastM = addMonths(ymNow,-1), nextM = addMonths(ymNow,1);
+  const inMonth = ym => c.rows.filter(r => r.date.startsWith(ym));
+  const nowRows = inMonth(thisM), prevRows = inMonth(lastM);
+  const mavMonth = nowRows.reduce((s,r) => s + mavValue(r.mav), 0);
+  const last30 = c.rows.filter(r => { const d = daysSince(r.date); return d !== null && d <= 30; }).length;
+
+  const planRow = ym => {
+    const p = planFor(c, ym);
+    const st = p && p.status ? p.status : "Not filed";
+    const cls = PLAN_DONE.test(st) ? "p-good" : (PLAN_SENT.test(st) || PLAN_MOVING.test(st)) ? "p-warn" : "p-crit";
+    return `<tr>
+      <td class="cli">${monthName(ym)}${ym===thisM?' <span class="tag">current</span>':""}</td>
+      <td><span class="pill ${cls}"><span class="dot"></span>${esc(st)}</span></td>
+      <td class="mono" style="color:var(--ink-2)">${esc(p && p.sent || "—")}</td>
+      <td class="mono" style="color:var(--ink-2)">${esc(p && p.approved || "—")}</td>
+      <td>${p && /^https?:/i.test(p.link||"")
+            ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">Open deck</a>` : "—"}</td>
+    </tr>`;
+  };
+
+  return `
+  <div class="panel">
+    <div class="chead">
+      <h2>${esc(c.name)}</h2>
+      <div class="cmeta">
+        <span class="tag">${esc(c.group || "Unassigned")}</span>
+        <span>${esc(c.status || "Status not recorded")}</span>
+        ${c.offRoster ? '<span class="pill p-warn"><span class="dot"></span>Not on the CLIENTS tab</span>' : ""}
+      </div>
+      ${c.people ? `<p class="people"><b>Who we quote:</b> ${esc(c.people)}</p>` : ""}
+      ${c.setup ? `<p class="people" style="color:var(--ink-3)">${esc(c.setup)}</p>` : ""}
+    </div>
+
+    <div class="phead"><h2>What this client needs</h2>
+      <div class="n">${acts.length ? acts.length + " open" : "nothing open"}</div></div>
+    <p class="lede">Worked out from the workbook each time this page loads. Log the coverage or
+    update the plan row and the item disappears — there is nothing here to tick off twice.</p>
+    ${acts.length ? `<div class="order">${acts.map((a,i) => `
+      <div class="act">
+        <div class="idx">${String(i+1).padStart(2,"0")}</div>
+        <div>
+          <div class="sevline">
+            <span class="pill p-${a.sev==="info"?"good":a.sev}"><span class="dot"></span>${
+              a.sev==="crit"?"Do today":a.sev==="warn"?"This week":"Before the report"}</span>
+          </div>
+          <h3>${a.title}</h3>
+          <p class="why">${a.why}</p>
+          <p class="do">${a.do}</p>
+          ${a.query ? `<div class="q">${esc(a.query)}</div>` : ""}
+          ${a.copy ? `<div style="margin-top:10px"><button class="btn" data-copy="${esc(a.copy)}">${
+            esc(a.copyLabel || "Copy")}</button></div>` : ""}
+        </div>
+      </div>`).join("")}</div>`
+    : `<div class="clear">
+         <h3>Nothing outstanding</h3>
+         <p>Coverage is current, the alert is confirmed, the plan is filed and every logged row is
+         report-ready. Move on to the next client on the rail above.</p>
+       </div>`}
+  </div>
+
+  <div class="panel">
+    <div class="phead"><h2>The month so far</h2><div class="n">${monthName(thisM)}</div></div>
+    <div class="strip">
+      <div class="stat"><div class="v">${nowRows.length}</div><div class="k">Placements this month</div></div>
+      <div class="stat"><div class="v">${prevRows.length}</div><div class="k">${monthName(lastM).split(" ")[0]}</div></div>
+      <div class="stat"><div class="v">${last30}</div><div class="k">Last 30 days</div></div>
+      <div class="stat"><div class="v">${c.days === null ? "—" : c.days}<small>${c.days===null?"":" d"}</small></div><div class="k">Since last coverage</div></div>
+      <div class="stat"><div class="v">${c.count}</div><div class="k">Logged all time</div></div>
+      <div class="stat"><div class="v" style="font-size:20px">${mavMonth ? "₹" + mavMonth.toLocaleString("en-IN") : "—"}</div><div class="k">MAV this month</div></div>
+    </div>
+    ${mavMonth ? `<div class="note">MAV is an <b>estimate</b>, not a rate card. AMEC and PRSA both
+      hold that advertising-value multipliers are unsupported by research — say so in the report
+      rather than presenting this figure as a fact.</div>` : ""}
+  </div>
+
+  ${c.plans.length ? `
+  <div class="panel">
+    <div class="phead"><h2>Monthly plan</h2><div class="n">from the PLANS tab</div></div>
+    <p class="lede">Where each month's social plan actually stands. The 20th is the marker —
+    next month's plan should be with the client by then.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Month</th><th>Status</th><th>Sent</th><th>Approved</th><th>Deck</th></tr></thead>
+      <tbody>${planRow(thisM)}${planRow(nextM)}${
+        c.plans.filter(p => p.month < thisM).sort((a,b)=>b.month.localeCompare(a.month))
+               .slice(0,3).map(p => planRow(p.month)).join("")}</tbody>
+    </table></div>
+  </div>` : `
+  <div class="panel">
+    <div class="phead"><h2>Monthly plan</h2><div class="n">not tracked</div></div>
+    <p class="lede" style="margin:0">${esc(c.name)} has no rows on the PLANS tab, so this desk
+    makes no plan demands of it. Add a row there — client, month, status — and plan chasing turns
+    on for this client automatically.</p>
+  </div>`}
+
+  <div class="panel">
+    <div class="phead"><h2>Coverage</h2><div class="n">${c.count} logged · newest first</div></div>
+    ${c.rows.length ? `<div class="feed">${c.rows.slice(0,15).map(r => `
+      <div class="item">
+        <div class="d">${esc(r.date)}${r.dnote?`<br><span style="color:var(--warn)">${esc(r.dnote)}</span>`:""}</div>
+        <div>
+          <p class="t">${r.topic
+            ? (/^https?:/i.test(r.link)
+                ? `<a href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.topic)}</a>`
+                : esc(r.topic))
+            : `<span style="color:var(--ink-3)">No topic recorded</span>${
+                /^https?:/i.test(r.link) ? ` <a href="${esc(r.link)}" target="_blank" rel="noopener" style="font-size:12px">open</a>` : ""}`}</p>
+          <div class="m">${esc(r.pub || "Publication not recorded")}${r.tier?" · "+esc(r.tier):""}${
+            r.place?" · "+esc(r.place):""}${mavMethod(r.mav)!=="none"?" · "+esc(r.mav):""}</div>
+        </div>
+      </div>`).join("")}</div>
+      ${c.rows.length > 15 ? `<div class="note">Showing the most recent 15 of ${c.rows.length}.
+        The full list is the ALL_COVERAGE tab, filtered to this client.</div>` : ""}`
+    : `<div class="clear"><h3>Nothing logged</h3>
+       <p>No placement has ever been recorded for ${esc(c.name)}. Start with the alert above.</p></div>`}
+  </div>
+
+  <div class="panel">
+    <div class="phead"><h2>Report readiness</h2><div class="n">check before the monthly report</div></div>
+    <p class="lede">Every row that would weaken the report if it went in as it stands.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Check</th><th class="num">Rows</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        ${readyRow("No tier recorded", gaps.noTier, "Tier drives the MAV rate card. An untiered row cannot be valued at all.")}
+        ${readyRow("No valuation", gaps.noMav, "Shows up as a blank in the report, or quietly drops out of the total.")}
+        ${readyRow("No link, not marked print", gaps.noLink, "Nothing to click through to, and no way to re-verify the piece later.")}
+        ${readyRow("Date flagged for verification", gaps.verify, "An approximate date cannot be defended if a client queries the month it falls in.")}
+        ${readyRow("Possible duplicate rows", gaps.dupes, "Same link or same publication on the same day. Double-counts both the placement and its MAV.")}
+      </tbody>
+    </table></div>
+    ${gaps.mixed ? `<div class="note"><b>Two valuation methods are live in this client's rows.</b>
+      Rupee-symbol figures came from Katalyst's own rate card; "Rs." figures were derived from
+      follower counts. Totalling them together produces a number that cannot be explained if the
+      client asks how it was calculated.</div>` : ""}
+  </div>
+
+  <div class="panel" id="askpanel" hidden>
+    <div class="phead"><h2>Ask about ${esc(c.name)}</h2></div>
+    <p class="lede">Answers from this client's figures on this page only. No memory between
+    questions — for drafting a pitch or a plan, use Claude itself.</p>
+    <div class="ask-row">
+      <input id="q" placeholder="e.g. what should I pitch them this month?" autocomplete="off">
+      <button id="go" class="btn-solid">Ask</button>
+    </div>
+    <div class="chips">
+      <span class="chip">Draft the chase email for this month's plan</span>
+      <span class="chip">What is the pattern in their coverage?</span>
+      <span class="chip">Which publications have covered them most?</span>
+    </div>
+    <div id="ans"></div>
+  </div>`;
+}
+
+function readyRow(label, n, why){
+  return `<tr>
+    <td>${n ? `<span class="pill p-${n>3?"crit":"warn"}"><span class="dot"></span>${esc(label)}</span>`
+            : `<span class="pill p-good"><span class="dot"></span>${esc(label)}</span>`}</td>
+    <td class="num">${n || "—"}</td>
+    <td style="color:var(--ink-2);font-size:12.5px">${n ? why : "Clear."}</td>
+  </tr>`;
+}
+
+/* ---------- wiring ---------- */
+function wireRail(){
+  app.querySelectorAll(".filt").forEach(b => b.onclick = () => { FILTER = b.dataset.g; renderAll(); });
+  app.querySelectorAll(".rcard").forEach(b => b.onclick = () => {
+    SEL = b.dataset.c;
+    try{ localStorage.setItem("katalyst-client", SEL); }catch(e){}
+    renderAll();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+}
+function wireCopy(){
+  app.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => copyText(b.dataset.copy, b));
+}
+
+function fail(title, body){
+  app.innerHTML = `<div class="panel"><div class="state">
+    <h3>${esc(title)}</h3><p>${body}</p></div></div>`;
+  stamp.textContent = "not connected";
+}
+
+/* ---------- live read ---------- */
+let got = false, retried = false;
+
+/* Saved to disk and opened as a file:// page there is no Claude runtime at all,
+   so say so rather than sitting on the skeleton forever. */
+const hasRuntime = !!(typeof window !== "undefined"
+  && window.claude && typeof window.claude.use === "function");
+
+if(!hasRuntime){
+  fail("Open this from Claude, not from a saved file",
+    "The desk has no data of its own — it reads the coverage workbook live through your " +
+    "Google Drive connection, and that connection only exists inside Claude. Opened from a " +
+    "Downloads folder it has nothing to read.<br><br>" +
+    "Open it from the artifact link, or find <b>Katalyst Client Desk</b> in your artifacts gallery.");
+}
+
+setTimeout(() => {
+  if(!got && hasRuntime && app.querySelector(".skel")){
+    fail("Still waiting on the workbook",
+      "Google Drive has not answered yet. If you were asked to allow this page access, approve it " +
+      "and reload. If you were not asked, check that Google Drive is connected on this account.");
+  }
+}, 25000);
+
+function mcpFail(code, server){
+  switch(code){
+    case "not_granted":
+    case "not_in_manifest":
+      return fail("Access to Google Drive was declined",
+        "This page can only read the workbook with your permission. Reload the page and allow " +
+        "Google Drive when asked.");
+    case "server_not_connected":
+      return fail("Google Drive is not connected",
+        "Add Google Drive in claude.ai under Settings → Connectors, then reload this page.");
+    case "needs_reauth":
+      return fail("Google Drive needs reconnecting",
+        "The connection has expired. Reconnect Google Drive in claude.ai under " +
+        "Settings → Connectors, then reload.");
+    case "selection_required":
+      return fail("More than one Google Drive is connected",
+        "Choose which Google Drive account this page should use when Claude asks, then reload.");
+    case "blocked_by_policy":
+    case "approval_required":
+      return fail("Google Drive is blocked for this page",
+        "An account policy prevents this page from reading Drive. Nothing here will work until " +
+        "that is changed.");
+    default:
+      return fail("Could not reach the workbook",
+        "Google Drive did not answer. Reload to try again.");
+  }
+}
+
+(async () => {
+  if(!hasRuntime) return;
+  const mcp = await claude.use("mcp");
+  if(!mcp){
+    fail("No connection to the workbook",
+      "This page reads the coverage workbook through your own Google Drive connection. " +
+      "Open it from your Claude account with Google Drive connected and the desk fills in.");
+    return;
+  }
+
+  /* Find the workbook by name — her copy has a different file id from his. */
+  let fileId = FALLBACK_FILE_ID;
+  try{
+    const res = await mcp.callTool("Google Drive","search_files",
+      {query:`title contains '${SEARCH_FRAGMENT}'`, pageSize:20, excludeContentSnippets:true},
+      {cache:{staleTime:300000}});
+    const files = (res.payload && res.payload.files) || [];
+    const sheets = files.filter(f => String(f.mimeType||"").includes("spreadsheet"));
+    const exact  = sheets.find(f => f.title === WORKBOOK_TITLE);
+    const near   = sheets.find(f => String(f.title||"").indexOf(WORKBOOK_TITLE) === 0);
+    fileId = (exact || near || sheets[0] || {}).id || FALLBACK_FILE_ID;
+  }catch(err){
+    if(!fileId) return mcpFail(err && err.code);
+  }
+  if(!fileId){
+    return fail(`No workbook called ${WORKBOOK_TITLE}`,
+      "This desk looks for a Google Sheet by that name in your Drive. Either it has not been " +
+      "uploaded to this account yet, or it was renamed. Upload it as a native Google Sheet — " +
+      "an .xlsx file will not be read.");
+  }
+
+  stamp.textContent = "reading the workbook…";
+  mcp.watchTool("Google Drive","read_file_content",{fileId}, ev => {
+    if(ev.type === "error"){
+      if(got) return;                       // keep the last good read on screen
+      const e = ev.error || {};
+      if(e.retryable && !retried){ retried = true; return; }   // one silent retry, the watch refetches
+      return mcpFail(e.code, e.server);
+    }
+    const p = ev.result && ev.result.payload;
+    const md = typeof p === "string" ? p : (p && p.fileContent);
+    if(!md){ if(!got) fail("Nothing came back",
+      "The workbook was reached but returned no content."); return; }
+    try{
+      DATA = build(md);
+      SEV_CACHE = {};
+      renderAll();
+      got = true;
+    }catch(e){
+      if(!got) fail("Could not read that workbook",
+        "The tabs did not look as expected. Check that <b>ALL_COVERAGE</b> and <b>CLIENTS</b> " +
+        "are still present, with their header rows intact.");
+    }
+  }, {refetchInterval: 300000});
+})();
+
+/* ---------- ask ---------- */
+let sampler = null;
+if(hasRuntime){
+  claude.use("sample").then(s => {
+    sampler = s;
+    const p = document.getElementById("askpanel");
+    if(s && p) p.hidden = false;
+  }).catch(() => {});
+}
+const fmt = t => esc(t || "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+
+function wireAsk(){
+  const panel = document.getElementById("askpanel");
+  if(!panel) return;
+  if(sampler) panel.hidden = false;
+  const q = document.getElementById("q"), go = document.getElementById("go"), ans = document.getElementById("ans");
+  panel.querySelectorAll(".chip").forEach(c => c.onclick = () => { q.value = c.textContent; ask(); });
+  go.onclick = ask;
+  q.onkeydown = e => { if(e.key === "Enter") ask(); };
+
+  async function ask(){
+    const question = q.value.trim();
+    const c = DATA && DATA.roster.find(r => r.name === SEL);
+    if(!question || !sampler || !c) return;
+    go.disabled = true; ans.className = "answer"; ans.textContent = "Thinking…";
+    const facts = {
+      client:c.name, group:c.group, status:c.status, keyPeople:c.people,
+      alertQuery:c.query, alertConfirmed:ALERT_YES.test(c.alert||""),
+      placementsAllTime:c.count, lastCoverage:c.last, daysSinceLastCoverage:c.days,
+      plans:c.plans.map(p => ({month:p.month, status:p.status, sent:p.sent, approved:p.approved})),
+      coverage:c.rows.slice(0,25).map(r => ({date:r.date, publication:r.pub, tier:r.tier,
+        placement:r.place, topic:r.topic, mav:r.mav})),
+      openActions:actionsFor(c).map(a => ({severity:a.sev, title:a.title})),
+      reportGaps:gapsFor(c),
+      today:today.toISOString().slice(0,10)
+    };
+    try{
+      const r = await sampler(
+        "You are the client desk for a Mumbai luxury-hospitality PR agency, Katalyst.\n" +
+        "Use ONLY the JSON below. Never invent a publication, a date or a number.\n" +
+        "Be concise and specific — three sentences unless a list is genuinely clearer.\n" +
+        "Zero coverage almost always means nothing was monitored, not that nothing happened.\n" +
+        "MAV figures are contested estimates; never present one as fact.\n" +
+        "If asked to draft something, write it in plain, warm, unfussy English — these are " +
+        "luxury hotel and restaurant clients, so no marketing jargon and no exclamation marks.\n\n" +
+        "DATA:\n" + JSON.stringify(facts) + "\n\nQUESTION: " + question,
+        {onText: ({text}) => { ans.innerHTML = fmt(text); }}
+      );
+      ans.innerHTML = fmt(r.text);
+    }catch(err){
+      const code = err && err.code;
+      ans.textContent = code === "rate_limited" ? "Too many questions at once — try again shortly."
+        : code === "not_granted" ? "This page was not allowed to ask Claude."
+        : "That question could not be answered just now.";
+    }finally{ go.disabled = false; }
+  }
+}
+</script>
